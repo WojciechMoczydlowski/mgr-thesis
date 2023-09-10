@@ -31,10 +31,10 @@ public class Bootstrap {
     public void init() {
         var student = new StudentEntity();
         student.setFirstname("Jan");
-        student.setLastname("kowalski");
+        student.setLastname("student");
         student.setCourses(new ArrayList<>());
 
-        TeacherEntity teacher = teacherRepository.findByEmail("rafal.nowak@gmail.com").orElseThrow(() -> new RuntimeExceptionWithHttpStatus("can't find bootstraped teacher", HttpStatus.NOT_FOUND));
+        TeacherEntity teacher = teacherRepository.findByEmail("rafal.teacher@teacher.com").orElseThrow(() -> new RuntimeExceptionWithHttpStatus("can't find bootstraped teacher", HttpStatus.NOT_FOUND));
 
         var course = CourseEntity.builder()
                 .code("APSI")

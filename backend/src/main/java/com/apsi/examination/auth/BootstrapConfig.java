@@ -16,17 +16,17 @@ class BootstrapConfig {
     public void init() {
         UserEntity entity = UserEntity.builder()
                 .firstname("Jan")
-                .lastname("kowalski")
+                .lastname("student")
                 .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
-                .email("jan.kowalski@gmail.com")
+                .email("jan.student@student.com")
                 .role(Role.STUDENT)
                 .build();
 
         UserEntity teacher = UserEntity.builder()
                 .firstname("Rafał")
-                .lastname("Nowak")
+                .lastname("teacher")
                 .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
-                .email("rafal.nowak@gmail.com")
+                .email("rafal.teacher@teacher.com")
                 .role(Role.TEACHER)
                 .build();
         userRepository.save(entity);
