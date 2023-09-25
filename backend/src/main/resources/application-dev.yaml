@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/examination
-    username: postgres
-    password: apsi_zespol3
+    url: jdbc:postgresql://localhost:5432/osobiste
+    username:
+    password:
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      xc: validate

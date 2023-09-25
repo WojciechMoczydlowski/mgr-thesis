@@ -19,6 +19,7 @@ public interface ExamPaperRepository extends JpaRepository<ExamPaperEntity, Long
     @Query("select e from ExamPaperEntity e where e.exam.id = :id and e.status = 'MARKED'")
     List<ExamPaperEntity> findAllByExamIdAndStatusMarked(Long id);
 
-    @Query(value = "SELECT ep.* FROM exampaper ep JOIN examtemplate et ON ep.exam_id = et.id WHERE (ep.status = 'WRITING' OR ep.status = 'UNRESOLVED') AND (et.date_time_end < :currentDateTime OR (ep.start_time + CAST(et.duration || ' minutes' AS interval)) < :currentDateTime)", nativeQuery = true)
+    // @Query(value = "SELECT ep.* FROM exampaper ep JOIN examtemplate et ON ep.exam_id = et.id WHERE (ep.status = 'WRITING' OR ep.status = 'UNRESOLVED') AND (et.date_time_end < :currentDateTime OR (ep.start_time + CAST(et.duration || ' minutes' AS interval)) < :currentDateTime)", nativeQuery = true)
+    @Query(value = "SELECT * FROM exampaper", nativeQuery = true)
     List<ExamPaperEntity> findAllPassed(LocalDateTime currentDateTime);
 }

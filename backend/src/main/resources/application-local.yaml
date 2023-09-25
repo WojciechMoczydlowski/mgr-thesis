@@ -1,7 +1,19 @@
 spring:
-  h2:
-    console:
-      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/examination
+    username: osobiste
+    password:
+    initialization-mode: always
   jpa:
+    defer-datasource-initialization: true
+    show_sql: true
     hibernate:
-      ddl-auto: create
+      ddl_auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  spring:
+    sql:
+      init:
+        mode: always

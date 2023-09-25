@@ -15,4 +15,7 @@ public interface CourseRepository extends JpaRepository<CourseEntity, String> {
 
     @Query(value = "SELECT * FROM course WHERE code in (SELECT course_code FROM enrollment WHERE student_id = :id)", nativeQuery = true)
     List<CourseEntity> findAllByStudentId(Long id);
+
+    @Query(value = "SELECT * FROM course", nativeQuery = true)
+    List<CourseEntity> findAll();
 }

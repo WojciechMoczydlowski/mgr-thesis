@@ -30,6 +30,8 @@ public class AuthService {
     }
 
     AuthenticationResponse authenticate(AuthenticationRequest request) {
+        
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

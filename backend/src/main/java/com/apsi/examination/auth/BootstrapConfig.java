@@ -14,22 +14,22 @@ class BootstrapConfig {
 
     @PostConstruct
     public void init() {
-        UserEntity entity = UserEntity.builder()
-                .firstname("Jan")
-                .lastname("student")
-                .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
-                .email("jan.student@student.com")
-                .role(Role.STUDENT)
-                .build();
+        // UserEntity entity = UserEntity.builder()
+        //         .firstname("Jan")
+        //         .lastname("student")
+        //         .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
+        //         .email("jan.student@student.com")
+        //         .role(Role.STUDENT)
+        //         .build();
 
-        UserEntity teacher = UserEntity.builder()
-                .firstname("Rafał")
-                .lastname("teacher")
-                .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
-                .email("rafal.teacher@teacher.com")
-                .role(Role.TEACHER)
-                .build();
-        userRepository.save(entity);
-        userRepository.save(teacher);
+        // UserEntity teacher = UserEntity.builder()
+        //         .firstname("Rafał")
+        //         .lastname("teacher")
+        //         .password("$2a$10$RQKsiiViCvNo30TvOc/A5uZZxhE4KDjNfxNpn.JCCjFbC2KR5SKru") //password
+        //         .email("rafal.teacher@teacher.com")
+        //         .role(Role.TEACHER)
+        //         .build();
+        // userRepository.save(entity);
+        // userRepository.save(teacher);
     }
 }
