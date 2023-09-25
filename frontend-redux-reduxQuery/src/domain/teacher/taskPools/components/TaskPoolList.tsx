@@ -1,14 +1,10 @@
 import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
-import { useTaskPools } from "../endpoints/useTaskPools";
-import { useAddTaskPool } from "../endpoints/useAddTaskPool";
 import AddTaskPoolModal from "./AddTaskPoolModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
-import { useEditTaskPool } from "../endpoints/useEditTaskPool";
 import EditTaskPoolModal from "./EditTaskPoolModal";
 
 export default function TaskPoolList() {
@@ -16,16 +12,12 @@ export default function TaskPoolList() {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const { data: taskPools, isLoading: isTaskPoolsLoading } = useTaskPools({
-    courseId,
-    examId,
-  });
+  const taskPools: TaskPool[] = [];
+  const addTaskPool = () => {};
+  const deleteTaskPool = () => {};
+  const editTaskPool = () => {};
 
-  const { mutate: addTaskPool } = useAddTaskPool({ courseId, examId });
-  const { mutate: deleteTaskPool } = useDeleteTaskPool({ courseId, examId });
-  const { mutate: editTaskPool } = useEditTaskPool({ courseId, examId });
-
-  if (isTaskPoolsLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
   }
 
@@ -44,15 +36,7 @@ export default function TaskPoolList() {
               description,
               pointsPerTask,
               taskDrawNumber,
-            }) =>
-              addTaskPool({
-                title,
-                taskType,
-                description,
-                pointsPerTask,
-                taskDrawNumber,
-              })
-            }
+            }) => addTaskPool()}
           />
         </Flex>
 
@@ -90,15 +74,13 @@ export default function TaskPoolList() {
                       <Stack direction="row">
                         <EditTaskPoolModal
                           taskPool={taskPool}
-                          editTaskPool={(params) =>
-                            editTaskPool({ ...params, taskPoolId: taskPool.id })
-                          }
+                          editTaskPool={(params) => editTaskPool()}
                         />
                         <IconButton
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteTaskPool({ taskPoolId: taskPool.id });
+                            deleteTaskPool();
                           }}
                           icon={<SmallCloseIcon />}
                         />

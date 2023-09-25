@@ -3,11 +3,8 @@ import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import EditClosedTaskModal from "./EditClosedTaskModal";
-import { useEditClosedTask } from "../endpoints/useEditClosedTask";
-import { useAddClosedTask } from "../endpoints/useAddClosedTask";
-import { useClosedTasks } from "../endpoints/useClosedTasks";
+import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
 
 export default function ClosedTaskList() {
   const { query, push } = useRouter();
@@ -15,31 +12,12 @@ export default function ClosedTaskList() {
   const examId = query.examId as string;
   const taskPoolId = query.taskPoolId as string;
 
-  const { data: tasks, isLoading: isTasksLoading } = useClosedTasks({
-    courseId,
-    examId,
-    taskPoolId,
-  });
+  const tasks: ClosedTask[] = [];
+  const addClosedTask = () => {};
+  const deleteTask = () => {};
+  const editClosedTask = () => {};
 
-  const { mutate: addClosedTask } = useAddClosedTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  const { mutate: deleteTask } = useDeleteTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  const { mutate: editClosedTask } = useEditClosedTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  if (isTasksLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie zadań" />;
   }
 
@@ -53,12 +31,7 @@ export default function ClosedTaskList() {
           <Spacer />
           <AddClosedTaskModal
             addClosedTask={({ title, taskContent, penaltyWeight, answers }) =>
-              addClosedTask({
-                title,
-                content: taskContent,
-                penaltyWeight,
-                answers,
-              })
+              addClosedTask()
             }
           />
         </Flex>
@@ -87,15 +60,13 @@ export default function ClosedTaskList() {
                       <Stack direction="row">
                         <EditClosedTaskModal
                           closedTask={task}
-                          editClosedTask={(params) =>
-                            editClosedTask({ ...params, taskId: task.id })
-                          }
+                          editClosedTask={(params) => editClosedTask()}
                         />
                         <IconButton
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteTask({ taskId: task.id });
+                            deleteTask();
                           }}
                           icon={<SmallCloseIcon />}
                         />

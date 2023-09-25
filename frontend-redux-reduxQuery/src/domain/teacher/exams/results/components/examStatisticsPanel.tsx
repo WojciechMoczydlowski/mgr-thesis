@@ -1,5 +1,4 @@
 import { Container, Flex, Box, Text, Spacer } from "@chakra-ui/react";
-import { useStatistics } from "../endpoints/useStatistics";
 
 type Props = {
   courseId: string;
@@ -7,10 +6,7 @@ type Props = {
 };
 
 export function ExamStaticticsPanel({ courseId, examId }: Props) {
-  const { data: statistics } = useStatistics({
-    courseId,
-    examId,
-  });
+  const statistics = {} as Statistics;
 
   return (
     <Container>

@@ -2,12 +2,9 @@ import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddTaskModal from "./AddOpenTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { useDeleteTask } from "../../endpoints/useDeleteTask";
-import { useOpenTasks } from "../endpoints/useOpenTasks";
-import { useAddOpenTask } from "../endpoints/useAddOpenTask";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
-import { useEditOpenTask } from "../endpoints/useEditOpenTask";
+import { OpenTask } from "@/domain/student/papers/model/Task";
 
 export default function OpenTaskList() {
   const { query } = useRouter();
@@ -15,31 +12,12 @@ export default function OpenTaskList() {
   const examId = query.examId as string;
   const taskPoolId = query.taskPoolId as string;
 
-  const { mutate: deleteTask } = useDeleteTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
+  const tasks: OpenTask[] = [];
+  const deleteTask = () => {};
+  const addOpenTask = () => {};
+  const editOpenTask = () => {};
 
-  const { data: tasks, isLoading: isTasksLoading } = useOpenTasks({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  const { mutate: addOpenTask } = useAddOpenTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  const { mutate: editOpenTask } = useEditOpenTask({
-    courseId,
-    examId,
-    taskPoolId,
-  });
-
-  if (isTasksLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie zadań" />;
   }
 
@@ -51,7 +29,7 @@ export default function OpenTaskList() {
             Pula zadań otwartych
           </Text>
           <Spacer />
-          <AddTaskModal addOpenTask={(params) => addOpenTask(params)} />
+          <AddTaskModal addOpenTask={(params) => addOpenTask()} />
         </Flex>
 
         {tasks?.length === 0 ? (
@@ -78,15 +56,13 @@ export default function OpenTaskList() {
                       <Stack direction="row">
                         <EditOpenTaskModal
                           openTask={task}
-                          editOpenTask={(params) =>
-                            editOpenTask({ ...params, taskId: task.id })
-                          }
+                          editOpenTask={(params) => editOpenTask()}
                         />
                         <IconButton
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteTask({ taskId: task.id });
+                            deleteTask();
                           }}
                           icon={<SmallCloseIcon />}
                         />

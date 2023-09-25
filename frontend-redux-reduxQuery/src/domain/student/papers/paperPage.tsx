@@ -1,16 +1,13 @@
 import Layout from "@/components/layout/Layout";
 import { Button, Container, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useStudentPaper } from "./endpoints/usePaper";
-import { useStudentExamDetails } from "../exams/endpoints/useExamDetails";
-import { TaskType } from "./model/Task";
+import { Task, TaskType } from "./model/Task";
 import { ClosedTaskTile } from "./components/ClosedTaskTile";
 import { OpenTaskTile } from "./components/OpenTaskTile";
-import { useUpdateStudentClosedTask } from "./endpoints/useUpdateClosedTask";
-import { useUpdateStudentOpenTask } from "./endpoints/useUpdateOpenTask";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
-import { useSubmitStudentPaper } from "./endpoints/useSubmitSubmit";
+import { Exam } from "@/domain/teacher/exams/model/exam";
+import { ExamDetails } from "../exams/model/ExamDetails";
 
 export function StudentPaperPage() {
   const { query, push } = useRouter();
@@ -18,40 +15,15 @@ export function StudentPaperPage() {
   const courseId = query.courseId as string;
   const paperId = query.paperId as string;
 
-  const { data: exam, isLoading: isExamLoading } = useStudentExamDetails({
-    courseId,
-    examId: paperId,
-  });
+  const exam = {} as ExamDetails;
+  const tasks: Task[] = [];
 
-  const { data: tasks, isLoading: isPaperLoading } = useStudentPaper({
-    courseId,
-    paperId,
-  });
+  const submitStudentPaper = () => {};
+  const updateClosedTask = () => {};
+  const updateStudentOpenTask = () => {};
 
-  const { mutate: updateClosedTask } = useUpdateStudentClosedTask({
-    courseId,
-    paperId,
-  });
-
-  const { mutate: updateOpenTask } = useUpdateStudentOpenTask({
-    courseId,
-    paperId,
-  });
-
-  const { mutate: submitStudentPaper } = useSubmitStudentPaper({
-    courseId,
-    paperId,
-    onSuccess: () => {
-      push(routes.student.courses.details.make(courseId));
-    },
-  });
-
-  if (isExamLoading || isPaperLoading) {
+  if (false) {
     return <Layout>Ładowanie arkusza</Layout>;
-  }
-
-  if (!exam || !tasks) {
-    return <Layout>Błąd podczas ładowania egzaminu</Layout>;
   }
 
   return (
@@ -70,7 +42,7 @@ export function StudentPaperPage() {
                 <OpenTaskTile
                   key={task.id}
                   task={task}
-                  onUpdate={updateOpenTask}
+                  onUpdate={() => updateStudentOpenTask()}
                 />
               );
             }
@@ -87,9 +59,7 @@ export function StudentPaperPage() {
 
             return <div key={index}>Błąd w wyświetleniu zadania</div>;
           })}
-          <Button onClick={() => submitStudentPaper({})}>
-            Zakończ egzamin
-          </Button>
+          <Button onClick={() => submitStudentPaper()}>Zakończ egzamin</Button>
         </Stack>
       </Container>
     </Layout>

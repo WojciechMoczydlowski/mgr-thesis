@@ -2,32 +2,21 @@ import Layout from "@/components/layout/Layout";
 import { Container, Flex, Text, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import TaskPoolList from "../taskPools/components/TaskPoolList";
-import { useExamById } from "./endpoints/useExamById";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { useGenerateExam } from "./endpoints/useGenerateExam";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
+import { ExamDetails } from "@/domain/student/exams/model/ExamDetails";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const { data: examDetails, isLoading: isExamDetailsLoading } = useExamById({
-    courseId,
-    examId,
-  });
+  const examDetails = {} as ExamDetails;
+  const generateExam = () => {};
 
-  const { mutate: generateExam } = useGenerateExam({
-    courseId,
-    examId,
-    onSuccess: () => {
-      push(routes.teacher.courses.details.make(courseId));
-    },
-  });
-
-  if (isExamDetailsLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
   }
 
@@ -50,7 +39,7 @@ export function TeacherExamPage() {
           variant="outline"
           colorScheme="purple"
           isDisabled={isEditingDisabled}
-          onClick={() => generateExam({})}
+          onClick={() => generateExam()}
         >
           Generuj egzamin dla studentów
         </Button>

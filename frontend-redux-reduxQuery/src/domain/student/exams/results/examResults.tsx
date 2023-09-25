@@ -1,4 +1,3 @@
-import { useStudentExamMarkingDetails } from "../endpoints/useExamMarkingDetails";
 import { useRouter } from "next/router";
 import {
   Container,
@@ -10,26 +9,20 @@ import {
   Textarea,
   Checkbox,
 } from "@chakra-ui/react";
-import { useStudentExamDetails } from "../endpoints/useExamDetails";
 import { formatDate } from "@/utils/formatDate";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { routes } from "@/utils/routes";
 import Layout from "@/components/layout/Layout";
+import { ExamDetails } from "../model/ExamDetails";
+import { ExamMarkingDetails } from "../model/ExamMarkingDetails";
 
 export function StudentExamResultsPage() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const { data: examMarkingDetails } = useStudentExamMarkingDetails({
-    courseId,
-    examId,
-  });
-
-  const { data: examDetails } = useStudentExamDetails({
-    courseId,
-    examId,
-  });
+  const examDetails = {} as ExamDetails;
+  const examMarkingDetails = {} as ExamMarkingDetails;
 
   const gradeColor = (grade: number | null | undefined) => {
     if (grade === 2) {

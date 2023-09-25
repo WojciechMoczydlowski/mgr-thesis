@@ -1,23 +1,22 @@
 import { Flex, Box, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useTeacherCourses } from "@/domain/teacher/courses/endpoints/useCourses";
 import { routes } from "@/utils/routes";
 import { InfoSpinner } from "@/components/infoSpinner";
 
 export function TeacherCoursesList() {
   const router = useRouter();
 
-  const { data: courses, isLoading, isError } = useTeacherCourses();
+  const courses: Course[] = [];
 
   const onSubjectClick = (courseId: string) => {
     router.push(routes.teacher.courses.details.make(courseId));
   };
 
-  if (isLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie kursów" />;
   }
 
-  if (isError) {
+  if (false) {
     return <div>Coś poszło nie tak</div>;
   }
 

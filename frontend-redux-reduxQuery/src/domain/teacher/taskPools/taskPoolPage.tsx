@@ -6,9 +6,9 @@ import { TaskPoolTypes } from "./const";
 import ClosedTaskList from "../tasks/closedTasks/components/ClosedTaskList";
 import { useTaskPoolById } from "./endpoints/useTaskPoolById";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { useExamById } from "../exams/endpoints/useExamById";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
+import { Exam } from "../exams/model/exam";
 
 export function TeacherTaskPoolPage() {
   const { query } = useRouter();
@@ -16,19 +16,10 @@ export function TeacherTaskPoolPage() {
   const examId = query.examId as string;
   const taskPoolId = query.taskPoolId as string;
 
-  const { data: taskPoolDetails, isLoading: isTaskPoolDetailsLoading } =
-    useTaskPoolById({
-      courseId,
-      examId,
-      taskPoolId,
-    });
+  const taskPoolDetails = {} as TaskPool;
+  const examDetails = {} as Exam;
 
-  const { data: examDetails, isLoading: isExamDetailsLoading } = useExamById({
-    courseId,
-    examId,
-  });
-
-  if (isTaskPoolDetailsLoading || isExamDetailsLoading) {
+  if (false) {
     return <InfoSpinner details="Ładowanie zadań" />;
   }
 

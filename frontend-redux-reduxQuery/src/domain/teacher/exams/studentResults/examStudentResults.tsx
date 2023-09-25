@@ -12,9 +12,8 @@ import {
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
-import { useExamPaperTasksById } from "./endpoints/useExamPaperTasksById";
 import GradeOpenTaskModal from "./components/GradeOpenTaskModal";
-import { useGradeOpenTask } from "./endpoints/useGradeOpenTask";
+import { ExamPaperTasks } from "./model/ExamPaperTasks";
 
 export function TeacherExamStudentResultsPage() {
   const { query } = useRouter();
@@ -22,17 +21,8 @@ export function TeacherExamStudentResultsPage() {
   const examId = query.examId as string;
   const examPaperId = query.memberId as string;
 
-  const { data: examPaperTasks } = useExamPaperTasksById({
-    courseId,
-    examId,
-    examPaperId,
-  });
-
-  const { mutate: gradeOpenTask } = useGradeOpenTask({
-    courseId,
-    examTemplateId: examId,
-    examPaperId,
-  });
+  const examPaperTasks = {} as ExamPaperTasks;
+  const gradeOpenTask = () => {};
 
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId, examId })}>
@@ -124,12 +114,7 @@ export function TeacherExamStudentResultsPage() {
                           <Stack direction="row">
                             <GradeOpenTaskModal
                               examPaperTask={examPaperTask}
-                              gradeOpenTask={(params) =>
-                                gradeOpenTask({
-                                  ...params,
-                                  taskExamPaperId: examPaperTask.id,
-                                })
-                              }
+                              gradeOpenTask={(params) => gradeOpenTask()}
                             />
                           </Stack>
                         </Flex>

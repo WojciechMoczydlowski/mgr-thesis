@@ -2,26 +2,18 @@ import Layout from "@/components/layout/Layout";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
-import { useExamPapers } from "./endpoints/useExamPapers";
 import { Container, Flex, Box, Text, Stack, Spacer } from "@chakra-ui/react";
 import { formatDate } from "@/utils/formatDate";
-import { useExamById } from "../endpoints/useExamById";
 import { ExamStaticticsPanel } from "./components/examStatisticsPanel";
+import { Exam } from "../model/exam";
 
 export function TeacherExamResultsPage() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const { data: examPapers } = useExamPapers({
-    courseId,
-    examId,
-  });
-
-  const { data: examDetails } = useExamById({
-    courseId,
-    examId,
-  });
+  const examPapers: ExamPaper[] = [];
+  const examDetails = {} as Exam;
 
   const gradeColor = (grade: number) => {
     if (grade === 2) {

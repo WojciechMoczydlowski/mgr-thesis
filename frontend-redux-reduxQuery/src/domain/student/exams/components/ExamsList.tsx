@@ -2,20 +2,18 @@ import { Flex, Box, Text, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import { routes } from "@/utils/routes";
-import { useStudentExams } from "../endpoints/useExams";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
+import { Exam } from "@/domain/teacher/exams/model/exam";
 
 export default function Exams() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
 
-  const { data: exams, isLoading: isExamsLoading } = useStudentExams({
-    courseId,
-  });
-
-  if (isExamsLoading) {
+  if (false) {
     return <div>Ładowanie egzaminów ...</div>;
   }
+
+  const exams: Exam[] = [];
 
   const plannedExams = exams?.filter(
     (exam) =>

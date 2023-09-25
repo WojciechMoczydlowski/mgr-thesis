@@ -2,35 +2,20 @@ import Layout from "@/components/layout/Layout";
 import { Button, Container, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
-import { useStartStudentPaper } from "../papers/endpoints/useStartPaper";
-import { useStudentExamDetails } from "./endpoints/useExamDetails";
 import { formatDate } from "@/utils/formatDate";
 import { ExamDetails } from "./model/ExamDetails";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
+import { Exam } from "@/domain/teacher/exams/model/exam";
 
 export function StudentExamPage() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const { data: exam, isLoading: isExamLoading } = useStudentExamDetails({
-    courseId,
-    examId,
-  });
+  const exam = {} as Exam;
 
-  const { mutate: startPaper, isLoading: isStartExamActionLoading } =
-    useStartStudentPaper({
-      courseId,
-      paperId: examId,
-      onSuccess: () =>
-        push(
-          routes.student.courses.papers.details.make({
-            courseId,
-            paperId: examId,
-          })
-        ),
-    });
+  const startPaper = () => {};
 
   const handleClick = (exam: ExamDetails) => {
     if (exam.status === ExamStatus.WRITING) {
@@ -41,15 +26,15 @@ export function StudentExamPage() {
         })
       );
     } else {
-      startPaper({});
+      startPaper();
     }
   };
 
-  if (isExamLoading) {
+  if (false) {
     return <div>Ładowanie egzaminu</div>;
   }
 
-  if (!exam) {
+  if (false) {
     return <div>Coś poszło nie tak</div>;
   }
 
@@ -67,7 +52,7 @@ export function StudentExamPage() {
           )}
           <Text>Czas trwania: {exam.duration}</Text>
           <Button
-            isLoading={isStartExamActionLoading}
+            isLoading={false}
             colorScheme="purple"
             onClick={() => handleClick(exam)}
             isDisabled={isButtonDisabled(exam)}
