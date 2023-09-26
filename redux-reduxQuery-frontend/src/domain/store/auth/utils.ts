@@ -1,5 +1,5 @@
 import jwt_decode from "jwt-decode";
-import { Authority } from "../store/authStore";
+import { Authority } from "./model";
 
 export function getAuthorityFromToken(token: string) {
   const decodedJwt = jwt_decode<{

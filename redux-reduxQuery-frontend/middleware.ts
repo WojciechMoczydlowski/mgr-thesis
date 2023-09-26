@@ -1,5 +1,5 @@
-import { Authority } from "@/domain/auth/store/authStore";
-import { getAuthorityFromToken } from "@/domain/auth/utils/getAuthorityFromToken";
+import { Authority } from "@/domain/store/auth/model";
+import { getAuthorityFromToken } from "@/domain/store/auth/utils";
 import { teacherRoutes, authRoutes, routes } from "@/utils/routes";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -39,8 +39,6 @@ export function middleware(request: NextRequest) {
       (requestPathname.includes("student") ||
         authRoutes.includes(requestPathname))
     ) {
-      console.log("teacher route");
-
       return NextResponse.redirect(
         new URL(routes.teacher.main.make(), request.url)
       );

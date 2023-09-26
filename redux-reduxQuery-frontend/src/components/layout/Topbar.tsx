@@ -1,4 +1,5 @@
-import { Authority, useAuthStore } from "@/domain/auth/store/authStore";
+import { selectAuthority } from "@/domain/store/auth";
+import { Authority } from "@/domain/store/auth/model";
 import { useLogout } from "@/services/auth/hooks/useLogout";
 import { routes } from "@/utils/routes";
 import {
@@ -13,11 +14,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 export default function Topbar() {
   const { push } = useRouter();
   const { logout } = useLogout();
-  const authority = useAuthStore((state) => state.authority);
+  const authority = useSelector(selectAuthority);
 
   const isStudent = authority === Authority.student;
   const isTeacher = authority === Authority.teacher;

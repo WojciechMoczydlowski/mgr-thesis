@@ -1,24 +1,20 @@
-import { useAuthStore } from "@/domain/auth/store/authStore";
-import { getAuthorityFromToken } from "@/domain/auth/utils/getAuthorityFromToken";
+import { getAuthorityFromToken } from "@/domain/store/auth/utils";
+import { useAppDispatch } from "@/domain/store";
 import { authClient } from "@/services/backend/authClient";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
+import { useSetToken } from "./useToken";
 
 export const useLogin = () => {
-  const authStore = useAuthStore();
+  const setToken = useSetToken();
 
-  const login = async (email: string, password: string) => {
+  return async (email: string, password: string) => {
     const {
       data: { jwt },
     } = await authClient.login(email, password);
 
     if (jwt) {
-      const authority = getAuthorityFromToken(jwt);
-      authStore.setAuthority(authority);
-      Cookies.set("token", JSON.stringify(jwt));
+      setToken(jwt);
     }
-    return jwt;
   };
-
-  return { login };
 };

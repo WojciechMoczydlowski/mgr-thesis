@@ -2,6 +2,7 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
 import { InfoSpinner } from "@/components/infoSpinner";
+import { Course } from "@/domain/store/teacher/courses/model";
 
 export function TeacherCoursesList() {
   const router = useRouter();
