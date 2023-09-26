@@ -1,11 +1,11 @@
 import { routes } from "@/utils/routes";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useCurrentToken } from "./useCurrentToken";
+import { useRemoveToken, useSetupToken } from "./useToken";
 
 export const useLogout = () => {
   const { push } = useRouter();
-  const { removeToken } = useCurrentToken();
+  const removeToken = useRemoveToken();
 
   const logout = () => {
     removeToken();

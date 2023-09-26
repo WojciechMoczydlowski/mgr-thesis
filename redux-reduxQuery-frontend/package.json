@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/core": "^7.23.0",
     "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/react": "^2.5.5",
+    "@chakra-ui/system": "^2.6.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@reduxjs/toolkit": "^1.9.6",
     "@tanstack/react-query": "^4.29.5",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.195",
@@ -31,9 +34,10 @@
     "react": "18.2.0",
     "react-datetime-picker": "^5.0.3",
     "react-dom": "18.2.0",
+    "react-is": "^18.2.0",
+    "react-redux": "^8.1.2",
     "styled-components": "^5.3.9",
-    "typescript": "5.0.3",
-    "zustand": "^4.3.7"
+    "typescript": "5.0.3"
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.26"

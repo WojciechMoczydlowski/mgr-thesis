@@ -19,7 +19,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const { login } = useLogin();
+  const login = useLogin();
   const router = useRouter();
 
   const onSubmit = async () => {
