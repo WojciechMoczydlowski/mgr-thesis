@@ -52,7 +52,7 @@ export default function Topbar() {
               )
             }
           >
-            Strona główna
+            Redux + ReduxQuery
           </Button>
         </Stack>
         <Stack direction="row" alignItems="center">

@@ -50,7 +50,7 @@ export default function Topbar() {
               )
             }
           >
-            Strona główna
+            Zustand + useQuery
           </Button>
         </Stack>
         <Stack direction="row" alignItems="center">
