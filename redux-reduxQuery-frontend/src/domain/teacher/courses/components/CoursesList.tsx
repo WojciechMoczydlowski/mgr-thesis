@@ -3,21 +3,27 @@ import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { Course } from "@/domain/store/teacher/courses/model";
+import { useGetTeacherCoursesQuery } from "@/domain/store/teacher";
 
 export function TeacherCoursesList() {
   const router = useRouter();
 
-  const courses: Course[] = [];
+  const {
+    data: courses,
+    error,
+    isLoading,
+    isError,
+  } = useGetTeacherCoursesQuery();
 
   const onSubjectClick = (courseId: string) => {
     router.push(routes.teacher.courses.details.make(courseId));
   };
 
-  if (false) {
+  if (isLoading) {
     return <InfoSpinner details="Ładowanie kursów" />;
   }
 
-  if (false) {
+  if (isError) {
     return <div>Coś poszło nie tak</div>;
   }
 
