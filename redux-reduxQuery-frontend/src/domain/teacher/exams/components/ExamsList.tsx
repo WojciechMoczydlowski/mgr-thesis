@@ -8,17 +8,26 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditExamModal from "./EditExamModal";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { Exam } from "../model/exam";
+import {
+  useDeleteTeacherExamMutation,
+  useGetTeacherExamsQuery,
+  usePostTeacherExamMutation,
+  usePutTeacherExamMutation,
+} from "@/domain/store/teacher";
 
 export default function Exams() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
 
-  const exams: Exam[] = [];
-  const addExam = () => {};
-  const deleteExam = () => {};
-  const editExam = () => {};
+  const { data: exams, isLoading } = useGetTeacherExamsQuery({ courseId });
+  const [addExam, { isLoading: isAddExamLoading }] =
+    usePostTeacherExamMutation();
+  const [editExam, { isLoading: isEditExamLoading }] =
+    usePutTeacherExamMutation();
+  const [deleteExam, { isLoading: isDeleteExamLoading }] =
+    useDeleteTeacherExamMutation();
 
-  if (false) {
+  if (isLoading) {
     return <InfoSpinner details="Ładowanie egzaminów" />;
   }
 
@@ -44,7 +53,16 @@ export default function Exams() {
           <Spacer />
           <AddExamModal
             addExam={({ title, description, startDate, endDate, duration }) =>
-              addExam()
+              addExam({
+                courseId,
+                payload: {
+                  title,
+                  description,
+                  dateTimeEnd: endDate.toISOString(),
+                  dateTimeStart: startDate.toISOString(),
+                  duration,
+                },
+              })
             }
           />
         </Flex>
@@ -80,12 +98,23 @@ export default function Exams() {
                       <Stack direction="row">
                         <EditExamModal
                           exam={createdExam}
-                          editExam={(params) => editExam()}
+                          editExam={(params) =>
+                            editExam({
+                              courseId,
+                              examId: createdExam.id,
+                              payload: {
+                                ...params,
+                                dateTimeEnd: params.dateTimeEnd.toISOString(),
+                                dateTimeStart:
+                                  params.dateTimeStart.toISOString(),
+                              },
+                            })
+                          }
                         />
                         <IconButton
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteExam();
+                            deleteExam({ courseId, examId: createdExam.id });
                           }}
                           aria-label="delete"
                           icon={<SmallCloseIcon />}
