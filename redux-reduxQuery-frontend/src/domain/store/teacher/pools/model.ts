@@ -1,4 +1,4 @@
-type TaskPool = {
+export type TaskPool = {
   id: string;
   title: string;
   taskType: string;

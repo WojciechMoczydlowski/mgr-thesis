@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import OpenTaskList from "../tasks/openTasks/components/OpenTaskList";
 import { TaskPoolTypes } from "./const";
 import ClosedTaskList from "../tasks/closedTasks/components/ClosedTaskList";
-import { useTaskPoolById } from "./endpoints/useTaskPoolById";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { Exam } from "../exams/model/exam";
+import { TaskPool } from "@/domain/store/teacher";
 
 export function TeacherTaskPoolPage() {
   const { query } = useRouter();

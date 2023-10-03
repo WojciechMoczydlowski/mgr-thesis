@@ -1,12 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authReducer } from "./auth";
-import { teacherApi } from "./teacher";
+import { teacherApi, tasksPoolsReducer } from "./teacher";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
+    tasksPools: tasksPoolsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(teacherApi.middleware),

@@ -17,6 +17,7 @@ import {
 import { useState, useEffect } from "react";
 import { TaskPoolTypes } from "../const";
 import { EditIcon } from "@chakra-ui/icons";
+import { TaskPool } from "@/domain/store/teacher";
 
 type Props = {
   taskPool: TaskPool;
@@ -49,6 +50,7 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
   const [taskPoolError, setTaskPoolError] = useState("");
 
   const onSubmit = () => {
+    console.log(title, taskType, description, pointsPerTask, taskDrawNumber);
     if (title && taskType && description && pointsPerTask && taskDrawNumber) {
       editTaskPool({
         taskPoolId: taskPool.id,
@@ -70,6 +72,8 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
     setPointsPerTask(taskPool.pointsPerTask);
     setTaskDrawNumber(taskPool.taskDrawNumber);
     setTaskType(taskPool.taskType);
+
+    console.log({ taskType: taskPool.taskType });
 
     setTaskPoolError("");
   }, [
