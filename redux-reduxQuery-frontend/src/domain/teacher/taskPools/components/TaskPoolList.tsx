@@ -1,4 +1,13 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Text,
+  Stack,
+  Spacer,
+  IconButton,
+  useEditable,
+  useToast,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
 import AddTaskPoolModal from "./AddTaskPoolModal";
@@ -6,19 +15,89 @@ import { InfoSpinner } from "@/components/infoSpinner";
 import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/domain/store";
+import {
+  fetchAllTasksPoolsThunk,
+  updateTasksPoolThunk,
+  addTasksPoolThunk,
+  deleteTasksPoolThunk,
+} from "@/domain/store/teacher";
+import { useSelector } from "react-redux";
+import { selectTasksPools } from "@/domain/store/teacher/pools/selectors";
+import { useRunInTask } from "@/utils/index";
+
+// toast({
+//   status: "error",
+//   title: "Wystąpił błąd podczas tworzenia puli zadań",
+// });
 
 export default function TaskPoolList() {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const taskPools: TaskPool[] = [];
-  const addTaskPool = () => {};
-  const deleteTaskPool = () => {};
-  const editTaskPool = () => {};
+  const dispatch = useAppDispatch();
 
-  if (false) {
+  const toast = useToast();
+
+  const { isError, isRunning, runInTask } = useRunInTask();
+  const { runInTask: runUpdateTasksPoolTask } = useRunInTask({
+    onError: () =>
+      toast({
+        status: "error",
+        title: "Błąd podczas edycji puli zadań",
+      }),
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Pula zadań pomyślnie edytowana",
+      });
+    },
+  });
+
+  const { runInTask: runAddTasksPoolTask } = useRunInTask({
+    onError: () =>
+      toast({
+        status: "error",
+        title: "Błąd podczas tworzenia puli zadań",
+      }),
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Pula zadań pomyślnie utworzona",
+      });
+    },
+  });
+
+  const { runInTask: runDeleteTasksPoolTask } = useRunInTask({
+    onError: () =>
+      toast({
+        status: "error",
+        title: "Błąd podczas usuwania puli zadań",
+      }),
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Pula zadań pomyślnie usunięta",
+      });
+    },
+  });
+
+  useEffect(() => {
+    runInTask(() => dispatch(fetchAllTasksPoolsThunk({ courseId, examId })));
+  }, [courseId, examId, dispatch, runInTask]);
+
+  const taskPools = useSelector(selectTasksPools);
+
+  const deleteTaskPool = () => {};
+
+  if (isRunning) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
+  }
+
+  if (isError) {
+    return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
   }
 
   return (
@@ -30,13 +109,11 @@ export default function TaskPoolList() {
           </Text>
           <Spacer />
           <AddTaskPoolModal
-            addTaskPool={({
-              title,
-              taskType,
-              description,
-              pointsPerTask,
-              taskDrawNumber,
-            }) => addTaskPool()}
+            addTaskPool={(params) =>
+              runAddTasksPoolTask(() =>
+                dispatch(addTasksPoolThunk({ examId, courseId, ...params }))
+              )
+            }
           />
         </Flex>
 
@@ -74,13 +151,31 @@ export default function TaskPoolList() {
                       <Stack direction="row">
                         <EditTaskPoolModal
                           taskPool={taskPool}
-                          editTaskPool={(params) => editTaskPool()}
+                          editTaskPool={(params) =>
+                            runUpdateTasksPoolTask(() =>
+                              dispatch(
+                                updateTasksPoolThunk({
+                                  courseId,
+                                  examId,
+                                  ...params,
+                                })
+                              )
+                            )
+                          }
                         />
                         <IconButton
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteTaskPool();
+                            runDeleteTasksPoolTask(() =>
+                              dispatch(
+                                deleteTasksPoolThunk({
+                                  courseId,
+                                  examId,
+                                  tasksPoolId: taskPool.id,
+                                })
+                              )
+                            );
                           }}
                           icon={<SmallCloseIcon />}
                         />

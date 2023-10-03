@@ -29,6 +29,7 @@ specifiers:
   react-dom: 18.2.0
   react-is: ^18.2.0
   react-redux: ^8.1.2
+  redux-thunk: ^2.4.2
   styled-components: ^5.3.9
   typescript: 5.0.3
 
@@ -60,6 +61,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-is: 18.2.0
   react-redux: 8.1.2_a5pki22omvhg66elofc4io3beq
+  redux-thunk: 2.4.2
   styled-components: 5.3.11_2nnfbxeir35khuel65t6tc6gjm
   typescript: 5.0.3
 
@@ -4135,6 +4137,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /redux-thunk/2.4.2:
+    resolution: {integrity: sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==}
+    peerDependencies:
+      redux: ^4
     dev: false
 
   /redux-thunk/2.4.2_redux@4.2.1:
