@@ -23,14 +23,12 @@ type Props = {
   editTaskPool: ({
     taskPoolId,
     title,
-    taskType,
     description,
     pointsPerTask,
     taskDrawNumber,
   }: {
     taskPoolId: string;
     title: string;
-    taskType: string;
     description: string;
     pointsPerTask: number;
     taskDrawNumber: number;
@@ -41,7 +39,7 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [title, setTitle] = useState("");
-  const [taskType, setTaskType] = useState("");
+  const [taskType, setTaskType] = useState(TaskPoolTypes.closed);
   const [description, setDescription] = useState("");
   const [pointsPerTask, setPointsPerTask] = useState<number>();
   const [taskDrawNumber, setTaskDrawNumber] = useState<number>();
@@ -53,7 +51,6 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
       editTaskPool({
         taskPoolId: taskPool.id,
         title,
-        taskType,
         description,
         pointsPerTask,
         taskDrawNumber,
@@ -106,6 +103,7 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
               />
               {taskPoolError && <Text color="tomato">{taskPoolError}</Text>}
               <Select
+                isDisabled
                 value={taskType}
                 onChange={(event) => setTaskType(event.currentTarget.value)}
               >
