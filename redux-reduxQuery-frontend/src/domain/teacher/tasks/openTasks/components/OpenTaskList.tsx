@@ -5,21 +5,7 @@ import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
 import { OpenTask } from "@/domain/student/papers/model/Task";
-
-function OpenTasksList() {
-  return (
-    <Flex flexGrow="1" direction="column">
-      <Flex alignItems="baseline">
-        <Text mt="8" fontSize="lg" fontWeight="bold">
-          Zadania otwarte
-        </Text>
-        <Spacer />
-        <AddOpenTaskModal addOpenTask={() => {}} />
-      </Flex>
-      <Flex direction="column">Lista zadań otwartych</Flex>
-    </Flex>
-  );
-}
+import OpenTaskTile from "./OpenTaskTile";
 
 export default function OpenTaskList() {
   const { query } = useRouter();
@@ -28,69 +14,50 @@ export default function OpenTaskList() {
   const taskPoolId = query.taskPoolId as string;
 
   const tasks: OpenTask[] = [];
-  const deleteTask = () => {};
   const addOpenTask = () => {};
-  const editOpenTask = () => {};
 
   if (false) {
-    return <InfoSpinner details="Ładowanie zadań" />;
+    return <Loader />;
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between">
+    <Flex direction="row" justifyContent="space-between" flexGrow="1">
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
-            Pula zadań otwartych
+            Lista zadań otwartych
           </Text>
           <Spacer />
           <AddTaskModal addOpenTask={(params) => addOpenTask()} />
         </Flex>
-
-        {tasks?.length === 0 ? (
-          <Text my="4" color="red.500">
-            Brak zadań w puli
-          </Text>
-        ) : (
-          <Flex direction="column" my="4">
-            {tasks?.map((task) => {
-              return (
-                <Box
-                  key={task.title}
-                  width="100%"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  p="2"
-                  my="1"
-                >
-                  <Stack>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      <Text fontSize="medium" fontWeight="bold">
-                        {task.title}
-                      </Text>
-                      <Stack direction="row">
-                        <EditOpenTaskModal
-                          openTask={task}
-                          editOpenTask={(params) => editOpenTask()}
-                        />
-                        <IconButton
-                          aria-label="delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteTask();
-                          }}
-                          icon={<SmallCloseIcon />}
-                        />
-                      </Stack>
-                    </Flex>
-                    <Text fontSize="medium">{task.content}</Text>
-                  </Stack>
-                </Box>
-              );
-            })}
-          </Flex>
-        )}
+        {tasks?.length === 0 ? <EmptyList /> : <List tasks={tasks} />}
       </Flex>
     </Flex>
   );
+}
+
+function EmptyList() {
+  return (
+    <Text my="4" color="red.500">
+      Brak zadań otwarych. Dodaj nowe zadania
+    </Text>
+  );
+}
+
+function List({ tasks }: { tasks: OpenTask[] }) {
+  return (
+    <Flex direction="column" my="4">
+      {tasks?.map((task) => {
+        return <OpenTaskTile key={task.id} task={task} />;
+      })}
+    </Flex>
+  );
+}
+
+function Loader() {
+  return <InfoSpinner details="Ładowanie pul zadań" />;
+}
+
+function Error() {
+  return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
 }

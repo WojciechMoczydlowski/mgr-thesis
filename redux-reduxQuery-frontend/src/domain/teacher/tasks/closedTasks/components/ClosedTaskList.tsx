@@ -5,6 +5,7 @@ import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditClosedTaskModal from "./EditClosedTaskModal";
 import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
+import ClosedTaskTile from "./ClosedTaskTile";
 
 export default function ClosedTaskList() {
   const { query, push } = useRouter();
@@ -18,15 +19,15 @@ export default function ClosedTaskList() {
   const editClosedTask = () => {};
 
   if (false) {
-    return <InfoSpinner details="Ładowanie zadań" />;
+    return <Loader />;
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between">
+    <Flex direction="row" justifyContent="space-between" flexGrow="1">
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
-            Pula zadań zamkniętych
+            Lista zadań zamkniętych
           </Text>
           <Spacer />
           <AddClosedTaskModal
@@ -36,50 +37,34 @@ export default function ClosedTaskList() {
           />
         </Flex>
 
-        {tasks?.length === 0 ? (
-          <Text my="4" color="red.500">
-            Brak zadań w puli
-          </Text>
-        ) : (
-          <Flex direction="column" my="4">
-            {tasks?.map((task) => {
-              return (
-                <Box
-                  key={task.title}
-                  width="100%"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  p="2"
-                  my="1"
-                >
-                  <Stack>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      <Text fontSize="medium" fontWeight="bold">
-                        {task.title}
-                      </Text>
-                      <Stack direction="row">
-                        <EditClosedTaskModal
-                          closedTask={task}
-                          editClosedTask={(params) => editClosedTask()}
-                        />
-                        <IconButton
-                          aria-label="delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteTask();
-                          }}
-                          icon={<SmallCloseIcon />}
-                        />
-                      </Stack>
-                    </Flex>
-                    <Text fontSize="medium">{task.content}</Text>
-                  </Stack>
-                </Box>
-              );
-            })}
-          </Flex>
-        )}
+        {tasks?.length === 0 ? <EmptyList /> : <List tasks={tasks} />}
       </Flex>
     </Flex>
   );
+}
+
+function EmptyList() {
+  return (
+    <Text my="4" color="red.500">
+      Brak zadań zamkniętych. Dodaj nowe zadania
+    </Text>
+  );
+}
+
+function List({ tasks }: { tasks: ClosedTask[] }) {
+  return (
+    <Flex direction="column" my="4">
+      {tasks?.map((task) => {
+        return <ClosedTaskTile key={task.id} task={task} />;
+      })}
+    </Flex>
+  );
+}
+
+function Loader() {
+  return <InfoSpinner details="Ładowanie pul zadań" />;
+}
+
+function Error() {
+  return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
 }

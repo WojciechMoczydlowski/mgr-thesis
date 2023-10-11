@@ -2,8 +2,10 @@ import { Flex, Text, Spacer } from "@chakra-ui/react";
 import AddOpenTaskModal from "../openTasks/components/AddOpenTaskModal";
 import AddClosedTaskModal from "../closedTasks/components/AddClosedTaskModal";
 import { TaskType } from "@/domain/student/papers/model/Task";
+import OpenTaskList from "../openTasks/components/OpenTaskList";
+import ClosedTaskList from "../closedTasks/components/ClosedTaskList";
 
-const taskType: TaskType | undefined = undefined;
+const taskType: TaskType | undefined = TaskType.OPEN;
 
 export function TasksList() {
   return (
@@ -11,43 +13,13 @@ export function TasksList() {
       {(() => {
         switch (taskType) {
           case TaskType.OPEN:
-            return <OpenTasksList />;
+            return <OpenTaskList />;
           case TaskType.CLOSED:
-            return <ClosedTasksList />;
+            return <ClosedTaskList />;
           default:
             return <NotSelectedList />;
         }
       })()}
-    </Flex>
-  );
-}
-
-function OpenTasksList() {
-  return (
-    <Flex flexGrow="1" direction="column">
-      <Flex alignItems="baseline">
-        <Text mt="8" fontSize="lg" fontWeight="bold">
-          Zadania otwarte
-        </Text>
-        <Spacer />
-        <AddOpenTaskModal addOpenTask={() => {}} />
-      </Flex>
-      <Flex direction="column">Lista zadań otwartych</Flex>
-    </Flex>
-  );
-}
-
-function ClosedTasksList() {
-  return (
-    <Flex flexGrow="1" direction="column">
-      <Flex alignItems="baseline">
-        <Text mt="8" fontSize="lg" fontWeight="bold">
-          Zadania zamknięte
-        </Text>
-        <Spacer />
-        <AddClosedTaskModal addClosedTask={() => {}} />
-      </Flex>
-      <Flex direction="column">Lista zadań</Flex>
     </Flex>
   );
 }

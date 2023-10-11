@@ -15,14 +15,10 @@ export function TeacherExamPage() {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const examDetails = {} as ExamDetails;
-  const generateExam = () => {};
+  // const examDetails = {} as ExamDetails;
+  // const generateExam = () => {};
 
-  if (false) {
-    return <InfoSpinner details="Ładowanie pul zadań" />;
-  }
-
-  const isEditingDisabled = examDetails?.status === ExamStatus.GENERATED;
+  // const isEditingDisabled = examDetails?.status === ExamStatus.GENERATED;
 
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId })}>

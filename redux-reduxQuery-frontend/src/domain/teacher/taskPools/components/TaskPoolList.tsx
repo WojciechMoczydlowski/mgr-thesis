@@ -1,15 +1,5 @@
-import {
-  Flex,
-  Box,
-  Text,
-  Stack,
-  Spacer,
-  IconButton,
-  useEditable,
-  useToast,
-} from "@chakra-ui/react";
+import { Flex, Text, Spacer, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { routes } from "@/utils/routes";
 import AddTaskPoolModal from "./AddTaskPoolModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { TaskPoolTypes } from "../const";
@@ -22,39 +12,38 @@ import {
   updateTasksPoolThunk,
   addTasksPoolThunk,
   deleteTasksPoolThunk,
+  TaskPool,
 } from "@/domain/store/teacher";
 import { useSelector } from "react-redux";
-import { selectTasksPools } from "@/domain/store/teacher/pools/selectors";
+import {
+  selectSelectedTaskPool,
+  selectTasksPools,
+} from "@/domain/store/teacher/pools/selectors";
 import { useRunInTask } from "@/utils/index";
-
-// toast({
-//   status: "error",
-//   title: "Wystąpił błąd podczas tworzenia puli zadań",
-// });
+import TaskPoolTile from "./TaskPoolTile";
 
 export default function TaskPoolList() {
-  const { query, push } = useRouter();
+  const { query } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
   const dispatch = useAppDispatch();
-
   const toast = useToast();
 
-  const { isError, isRunning, runInTask } = useRunInTask();
-  const { runInTask: runUpdateTasksPoolTask } = useRunInTask({
-    onError: () =>
-      toast({
-        status: "error",
-        title: "Błąd podczas edycji puli zadań",
-      }),
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "Pula zadań pomyślnie edytowana",
-      });
-    },
-  });
+  const taskPools = useSelector(selectTasksPools);
+  const selectedTaskPool = useSelector(selectSelectedTaskPool);
+
+  const {
+    isError,
+    isRunning: isTaskPoolsLoading,
+    runInTask: runFetchTasksPoolsTask,
+  } = useRunInTask();
+
+  useEffect(() => {
+    runFetchTasksPoolsTask(() =>
+      dispatch(fetchAllTasksPoolsThunk({ courseId, examId }))
+    );
+  }, [courseId, examId, dispatch, runFetchTasksPoolsTask]);
 
   const { runInTask: runAddTasksPoolTask } = useRunInTask({
     onError: () =>
@@ -70,34 +59,12 @@ export default function TaskPoolList() {
     },
   });
 
-  const { runInTask: runDeleteTasksPoolTask } = useRunInTask({
-    onError: () =>
-      toast({
-        status: "error",
-        title: "Błąd podczas usuwania puli zadań",
-      }),
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "Pula zadań pomyślnie usunięta",
-      });
-    },
-  });
-
-  useEffect(() => {
-    runInTask(() => dispatch(fetchAllTasksPoolsThunk({ courseId, examId })));
-  }, [courseId, examId, dispatch, runInTask]);
-
-  const taskPools = useSelector(selectTasksPools);
-
-  const deleteTaskPool = () => {};
-
-  if (isRunning) {
-    return <InfoSpinner details="Ładowanie pul zadań" />;
+  if (isTaskPoolsLoading) {
+    return <Loader />;
   }
 
   if (isError) {
-    return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
+    return <Error />;
   }
 
   return (
@@ -118,90 +85,52 @@ export default function TaskPoolList() {
         </Flex>
 
         {taskPools?.length === 0 ? (
-          <Text my="4" color="red.500">
-            Brak pul zadań
-          </Text>
+          <EmptyList />
         ) : (
-          <Flex direction="column" my="4">
-            {taskPools?.map((taskPool) => {
-              return (
-                <Box
-                  cursor="pointer"
-                  onClick={() =>
-                    push(
-                      routes.teacher.courses.exams.taskPools.details.make({
-                        courseId,
-                        examId,
-                        taskPoolId: taskPool.id,
-                      })
-                    )
-                  }
-                  key={taskPool.title}
-                  width="100%"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  p="2"
-                  my="1"
-                >
-                  <Stack>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      <Text fontSize="medium" fontWeight="bold">
-                        {taskPool.title}
-                      </Text>
-                      <Stack direction="row">
-                        <EditTaskPoolModal
-                          taskPool={taskPool}
-                          editTaskPool={(params) =>
-                            runUpdateTasksPoolTask(() =>
-                              dispatch(
-                                updateTasksPoolThunk({
-                                  courseId,
-                                  examId,
-                                  ...params,
-                                })
-                              )
-                            )
-                          }
-                        />
-                        <IconButton
-                          aria-label="delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            runDeleteTasksPoolTask(() =>
-                              dispatch(
-                                deleteTasksPoolThunk({
-                                  courseId,
-                                  examId,
-                                  tasksPoolId: taskPool.id,
-                                })
-                              )
-                            );
-                          }}
-                          icon={<SmallCloseIcon />}
-                        />
-                      </Stack>
-                    </Flex>
-
-                    <Text fontSize="medium">{taskPool.description}</Text>
-                    <Text fontSize="small">
-                      Typ zadań:{" "}
-                      {taskPool.taskType === TaskPoolTypes.open
-                        ? "otwarte"
-                        : "zamknięte"}
-                    </Text>
-                    <Text fontSize="small">
-                      Liczba punktów za zadanie: {taskPool.pointsPerTask}
-                    </Text>
-                    <Text fontSize="small">
-                      Liczba losowanych zadań: {taskPool.taskDrawNumber}
-                    </Text>
-                  </Stack>
-                </Box>
-              );
-            })}
-          </Flex>
+          <List
+            taskPools={taskPools}
+            selectedTaskPoolId={selectedTaskPool?.id}
+          />
         )}
       </Flex>
     </Flex>
   );
+}
+
+function EmptyList() {
+  return (
+    <Text my="4" color="red.500">
+      Brak pul zadań
+    </Text>
+  );
+}
+
+function List({
+  taskPools,
+  selectedTaskPoolId,
+}: {
+  taskPools: TaskPool[];
+  selectedTaskPoolId?: string;
+}) {
+  return (
+    <Flex direction="column" my="4">
+      {taskPools?.map((taskPool) => {
+        return (
+          <TaskPoolTile
+            key={taskPool.id}
+            taskPool={taskPool}
+            isSelected={taskPool.id === selectedTaskPoolId}
+          />
+        );
+      })}
+    </Flex>
+  );
+}
+
+function Loader() {
+  return <InfoSpinner details="Ładowanie pul zadań" />;
+}
+
+function Error() {
+  return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
 }
