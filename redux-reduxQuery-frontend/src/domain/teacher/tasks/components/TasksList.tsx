@@ -4,18 +4,29 @@ import AddClosedTaskModal from "../closedTasks/components/AddClosedTaskModal";
 import { TaskType } from "@/domain/student/papers/model/Task";
 import OpenTaskList from "../openTasks/components/OpenTaskList";
 import ClosedTaskList from "../closedTasks/components/ClosedTaskList";
-
-const taskType: TaskType | undefined = TaskType.OPEN;
+import { useSelector } from "react-redux";
+import { selectSelectedTaskPool } from "@/domain/store/teacher/pools/selectors";
 
 export function TasksList() {
+  const selectedTaskPool = useSelector(selectSelectedTaskPool);
+
+  if (!selectedTaskPool) {
+    return <NotSelectedList />;
+  }
+
   return (
     <Flex flexGrow="1">
       {(() => {
-        switch (taskType) {
+        switch (selectedTaskPool.taskType) {
           case TaskType.OPEN:
-            return <OpenTaskList />;
+            return (
+              <OpenTaskList
+                taskPoolId={selectedTaskPool.id}
+                taskPoolTitle={selectedTaskPool.title}
+              />
+            );
           case TaskType.CLOSED:
-            return <ClosedTaskList />;
+            return <ClosedTaskList taskPoolId={selectedTaskPool.id} />;
           default:
             return <NotSelectedList />;
         }
@@ -26,7 +37,12 @@ export function TasksList() {
 
 function NotSelectedList() {
   return (
-    <Flex flexGrow="1" alignItems="center" justifyContent="center">
+    <Flex
+      flexGrow="1"
+      flexBasis="0"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Text fontSize="medium">Proszę wybrać pulę zadań do edycji</Text>
     </Flex>
   );

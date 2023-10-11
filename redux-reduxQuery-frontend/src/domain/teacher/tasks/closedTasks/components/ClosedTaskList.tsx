@@ -7,11 +7,14 @@ import EditClosedTaskModal from "./EditClosedTaskModal";
 import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
 import ClosedTaskTile from "./ClosedTaskTile";
 
-export default function ClosedTaskList() {
+type Props = {
+  taskPoolId: string;
+};
+
+export default function ClosedTaskList({ taskPoolId }: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
-  const taskPoolId = query.taskPoolId as string;
 
   const tasks: ClosedTask[] = [];
   const addClosedTask = () => {};
@@ -23,7 +26,12 @@ export default function ClosedTaskList() {
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between" flexGrow="1">
+    <Flex
+      direction="row"
+      justifyContent="space-between"
+      flexGrow="1"
+      flexBasis="0"
+    >
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
