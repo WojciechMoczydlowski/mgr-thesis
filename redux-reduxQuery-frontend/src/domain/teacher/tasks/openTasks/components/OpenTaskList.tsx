@@ -6,6 +6,21 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
 import { OpenTask } from "@/domain/student/papers/model/Task";
 
+function OpenTasksList() {
+  return (
+    <Flex flexGrow="1" direction="column">
+      <Flex alignItems="baseline">
+        <Text mt="8" fontSize="lg" fontWeight="bold">
+          Zadania otwarte
+        </Text>
+        <Spacer />
+        <AddOpenTaskModal addOpenTask={() => {}} />
+      </Flex>
+      <Flex direction="column">Lista zadań otwartych</Flex>
+    </Flex>
+  );
+}
+
 export default function OpenTaskList() {
   const { query } = useRouter();
   const courseId = query.courseId as string;

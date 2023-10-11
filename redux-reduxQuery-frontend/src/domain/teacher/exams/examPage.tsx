@@ -7,6 +7,8 @@ import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { ExamDetails } from "@/domain/student/exams/model/ExamDetails";
+import { ExamHeader } from "./components";
+import { TasksList } from "../tasks/components/TasksList";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -24,27 +26,19 @@ export function TeacherExamPage() {
 
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId })}>
-      <Container>
-        <Flex direction="column">
-          <Text fontSize="lg" fontWeight="bold">
-            Szczegóły
-          </Text>
-          <Text>Przedmiot: {courseId}</Text>
-          <Text>Tytuł egzaminu: {examDetails?.title}</Text>
-          <Text>Opis egzaminu: {examDetails?.description}</Text>
+      <Container maxW="8xl">
+        <ExamHeader
+          courseName="mocked course name"
+          examDescription="mocked exam description"
+          examTitle="mocked exam title"
+          generateExam={() => {}}
+          isEditingDisabled
+        />
+
+        <Flex flexGrow="1">
+          <TaskPoolList />
+          <TasksList />
         </Flex>
-
-        <Button
-          mt="4"
-          variant="outline"
-          colorScheme="purple"
-          isDisabled={isEditingDisabled}
-          onClick={() => generateExam()}
-        >
-          Generuj egzamin dla studentów
-        </Button>
-
-        <TaskPoolList />
       </Container>
     </Layout>
   );

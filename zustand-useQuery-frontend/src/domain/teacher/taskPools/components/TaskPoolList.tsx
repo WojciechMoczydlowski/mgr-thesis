@@ -30,7 +30,7 @@ export default function TaskPoolList() {
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between">
+    <Flex direction="row" justifyContent="space-between" flexGrow="1">
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
