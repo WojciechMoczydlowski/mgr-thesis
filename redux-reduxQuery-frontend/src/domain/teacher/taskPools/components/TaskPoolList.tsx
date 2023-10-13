@@ -9,13 +9,15 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/domain/store";
 import {
   fetchAllTasksPoolsThunk,
-  updateTasksPoolThunk,
+  updateOpenTaskThunk,
   addTasksPoolThunk,
   deleteTasksPoolThunk,
   TaskPool,
 } from "@/domain/store/teacher";
 import { useSelector } from "react-redux";
 import {
+  selectClosedTasksPools,
+  selectOpenTasksPools,
   selectSelectedTaskPool,
   selectTasksPools,
 } from "@/domain/store/teacher/pools/selectors";
@@ -30,8 +32,9 @@ export default function TaskPoolList() {
   const dispatch = useAppDispatch();
   const toast = useToast();
 
-  const taskPools = useSelector(selectTasksPools);
   const selectedTaskPool = useSelector(selectSelectedTaskPool);
+  const openTasksPools = useSelector(selectOpenTasksPools);
+  const closedTasksPools = useSelector(selectClosedTasksPools);
 
   const {
     isError,
@@ -68,7 +71,12 @@ export default function TaskPoolList() {
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between" flexGrow="1">
+    <Flex
+      direction="row"
+      justifyContent="space-between"
+      flexGrow="1"
+      flexBasis="1"
+    >
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
@@ -84,14 +92,35 @@ export default function TaskPoolList() {
           />
         </Flex>
 
-        {taskPools?.length === 0 ? (
-          <EmptyList />
-        ) : (
-          <List
-            taskPools={taskPools}
-            selectedTaskPoolId={selectedTaskPool?.id}
-          />
-        )}
+        <Flex direction="column">
+          <Text mt="8" fontSize="lg" fontWeight="bold">
+            Otwarte pule zadań
+          </Text>
+
+          {openTasksPools?.length === 0 ? (
+            <EmptyList />
+          ) : (
+            <List
+              taskPools={openTasksPools}
+              selectedTaskPoolId={selectedTaskPool?.id}
+            />
+          )}
+        </Flex>
+
+        <Flex direction="column">
+          <Text mt="8" fontSize="lg" fontWeight="bold">
+            Zamknięte pule zadań
+          </Text>
+
+          {closedTasksPools?.length === 0 ? (
+            <EmptyList />
+          ) : (
+            <List
+              taskPools={closedTasksPools}
+              selectedTaskPoolId={selectedTaskPool?.id}
+            />
+          )}
+        </Flex>
       </Flex>
     </Flex>
   );

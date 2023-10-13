@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { OpenTask } from "./model";
-import { fetchOpenTasksThunk } from "./thunk";
+import { fetchOpenTasksThunk } from "./thunks";
 
 export interface TasksPoolsState {
   openTasks: OpenTask[];

@@ -6,7 +6,7 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
 import { useAppDispatch } from "@/domain/store";
 import {
-  updateTasksPoolThunk,
+  updateOpenTaskThunk,
   deleteTasksPoolThunk,
   TaskPool,
   unSelectTaskPool,
@@ -86,7 +86,7 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
               editTaskPool={(params) =>
                 runUpdateTasksPoolTask(() =>
                   dispatch(
-                    updateTasksPoolThunk({
+                    updateOpenTaskThunk({
                       courseId,
                       examId,
                       ...params,

@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import AddTaskModal from "./AddOpenTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import EditOpenTaskModal from "./EditOpenTaskModal";
 import { OpenTask } from "@/domain/student/papers/model/Task";
 import OpenTaskTile from "./OpenTaskTile";
 import { useAppDispatch } from "@/domain/store";
@@ -91,7 +90,11 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
             }
           />
         </Flex>
-        {tasks?.length === 0 ? <EmptyList /> : <List tasks={tasks} />}
+        {tasks?.length === 0 ? (
+          <EmptyList />
+        ) : (
+          <List tasks={tasks} taskPoolId={taskPoolId} />
+        )}
       </Flex>
     </Flex>
   );
@@ -105,11 +108,19 @@ function EmptyList() {
   );
 }
 
-function List({ tasks }: { tasks: OpenTask[] }) {
+function List({
+  tasks,
+  taskPoolId,
+}: {
+  tasks: OpenTask[];
+  taskPoolId: string;
+}) {
   return (
     <Flex direction="column" my="4">
       {tasks?.map((task) => {
-        return <OpenTaskTile key={task.id} task={task} />;
+        return (
+          <OpenTaskTile key={task.id} task={task} taskPoolId={taskPoolId} />
+        );
       })}
     </Flex>
   );

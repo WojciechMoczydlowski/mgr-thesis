@@ -5,14 +5,32 @@ import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
 import { OpenTask } from "@/domain/student/papers/model/Task";
+import { useRunInTask } from "@/utils/useRunInTask";
+import { useAppDispatch } from "@/domain/store";
+import {
+  deleteOpenTaskThunk,
+  updateOpenTaskThunk,
+} from "@/domain/store/teacher";
 
 type Props = {
   task: OpenTask;
+  taskPoolId: string;
 };
 
-export default function OpenTaskTile({ task }: Props) {
-  const deleteTask = () => {};
-  const editOpenTask = () => {};
+export default function OpenTaskTile({ task, taskPoolId }: Props) {
+  const { query } = useRouter();
+  const courseId = query.courseId as string;
+  const examId = query.examId as string;
+
+  const dispatch = useAppDispatch();
+
+  const { isRunning: isEditOpenTaskLoading, runInTask: runEditOpenTaskTask } =
+    useRunInTask();
+
+  const {
+    isRunning: isDeleteOpenTaskLoading,
+    runInTask: runDeleteOpenTaskTask,
+  } = useRunInTask();
 
   if (false) {
     return <InfoSpinner details="Ładowanie zadań" />;
@@ -35,13 +53,36 @@ export default function OpenTaskTile({ task }: Props) {
           <Stack direction="row">
             <EditOpenTaskModal
               openTask={task}
-              editOpenTask={(params) => editOpenTask()}
+              isLoading={isEditOpenTaskLoading}
+              editOpenTask={(params) =>
+                runEditOpenTaskTask(() =>
+                  dispatch(
+                    updateOpenTaskThunk({
+                      courseId,
+                      examId,
+                      taskPoolId,
+                      taskId: task.id,
+                      ...params,
+                    })
+                  )
+                )
+              }
             />
             <IconButton
               aria-label="delete"
+              isLoading={isDeleteOpenTaskLoading}
               onClick={(e) => {
                 e.stopPropagation();
-                deleteTask();
+                runDeleteOpenTaskTask(() =>
+                  dispatch(
+                    deleteOpenTaskThunk({
+                      courseId,
+                      examId,
+                      taskPoolId,
+                      taskId: task.id,
+                    })
+                  )
+                );
               }}
               icon={<SmallCloseIcon />}
             />

@@ -9,9 +9,10 @@ import ClosedTaskTile from "./ClosedTaskTile";
 
 type Props = {
   taskPoolId: string;
+  taskPoolTitle: string;
 };
 
-export default function ClosedTaskList({ taskPoolId }: Props) {
+export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
@@ -35,7 +36,8 @@ export default function ClosedTaskList({ taskPoolId }: Props) {
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
-            Lista zadań zamkniętych
+            Lista zadań zamkniętych dla
+            <Text textColor="cyan.600">{taskPoolTitle}</Text>
           </Text>
           <Spacer />
           <AddClosedTaskModal

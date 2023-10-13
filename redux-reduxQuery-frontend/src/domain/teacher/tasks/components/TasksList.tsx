@@ -15,7 +15,7 @@ export function TasksList() {
   }
 
   return (
-    <Flex flexGrow="1">
+    <Flex flexGrow="1" flexBasis="0">
       {(() => {
         switch (selectedTaskPool.taskType) {
           case TaskType.OPEN:
@@ -26,7 +26,12 @@ export function TasksList() {
               />
             );
           case TaskType.CLOSED:
-            return <ClosedTaskList taskPoolId={selectedTaskPool.id} />;
+            return (
+              <ClosedTaskList
+                taskPoolId={selectedTaskPool.id}
+                taskPoolTitle={selectedTaskPool.title}
+              />
+            );
           default:
             return <NotSelectedList />;
         }
