@@ -6,6 +6,8 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
 import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
 import { useEditTaskPool } from "../endpoints/useEditTaskPool";
+import { useTaskPoolById } from "../endpoints/useTaskPoolById";
+import { useTaskPoolStore } from "../store/taskPoolStore";
 
 type Props = {
   taskPool: TaskPool;
@@ -17,17 +19,17 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const toast = useToast();
-
   const { mutate: deleteTaskPool } = useDeleteTaskPool({ courseId, examId });
   const { mutate: editTaskPool } = useEditTaskPool({ courseId, examId });
 
+  const { selectTaskPool, unSelectTaskPool } = useTaskPoolStore();
+
   const onTileClick = () => {
-    // if (isSelected) {
-    //   dispatch(unSelectTaskPool());
-    // } else {
-    //   dispatch(selectTaskPool({ id: taskPool.id }));
-    // }
+    if (isSelected) {
+      unSelectTaskPool();
+    } else {
+      selectTaskPool({ id: taskPool.id });
+    }
   };
 
   return (

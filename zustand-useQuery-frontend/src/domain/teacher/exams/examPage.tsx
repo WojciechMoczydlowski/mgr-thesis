@@ -10,6 +10,8 @@ import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { ExamHeader } from "./components";
 import { TasksList } from "../tasks/components";
+import { useTaskPools } from "../taskPools/endpoints/useTaskPools";
+import { useTaskPoolStore } from "../taskPools/store/taskPoolStore";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -29,6 +31,21 @@ export function TeacherExamPage() {
     },
   });
 
+  const {
+    data: taskPools,
+    isLoading: isTaskPoolsLoading,
+    isError,
+  } = useTaskPools({
+    courseId,
+    examId,
+  });
+
+  const { selectedTaskPoolId } = useTaskPoolStore();
+
+  const selectedTaskPool = taskPools?.find(
+    (taskPool) => taskPool.id === selectedTaskPoolId
+  );
+
   if (isExamDetailsLoading) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
   }
@@ -47,8 +64,12 @@ export function TeacherExamPage() {
         />
 
         <Flex flexGrow="1">
-          <TaskPoolList />
-          <TasksList />
+          <TaskPoolList
+            taskPools={taskPools}
+            isLoading={isTaskPoolsLoading}
+            isError={isError}
+          />
+          <TasksList selectedTaskPool={selectedTaskPool} />
         </Flex>
       </Container>
     </Layout>

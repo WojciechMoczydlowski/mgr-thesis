@@ -8,26 +8,24 @@ import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
 import { useEditTaskPool } from "../endpoints/useEditTaskPool";
 import { TaskType } from "@/domain/student/papers/model/Task";
 import TaskPoolTile from "./TaskPoolTile";
+import { useTaskPoolStore } from "../store/taskPoolStore";
 
-export default function TaskPoolList() {
+type Props = {
+  taskPools?: TaskPool[];
+  isLoading: boolean;
+  isError: boolean;
+};
+
+export default function TaskPoolList({ taskPools, isLoading, isError }: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const {
-    data: taskPools,
-    isLoading: isTaskPoolsLoading,
-    isError,
-  } = useTaskPools({
-    courseId,
-    examId,
-  });
-
   const { mutate: addTaskPool } = useAddTaskPool({ courseId, examId });
-  const { mutate: deleteTaskPool } = useDeleteTaskPool({ courseId, examId });
-  const { mutate: editTaskPool } = useEditTaskPool({ courseId, examId });
 
-  if (isTaskPoolsLoading) {
+  const { selectedTaskPoolId } = useTaskPoolStore();
+
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -35,13 +33,12 @@ export default function TaskPoolList() {
     return <Error />;
   }
 
-  const openTasksPools = taskPools.filter(
-    (taskPool) => taskPool.taskType === TaskType.OPEN
-  );
+  const openTasksPools =
+    taskPools?.filter((taskPool) => taskPool.taskType === TaskType.OPEN) ?? [];
 
-  const closedTasksPools = taskPools.filter(
-    (taskPool) => taskPool.taskType === TaskType.CLOSED
-  );
+  const closedTasksPools =
+    taskPools?.filter((taskPool) => taskPool.taskType === TaskType.CLOSED) ??
+    [];
 
   return (
     <Flex
@@ -69,8 +66,7 @@ export default function TaskPoolList() {
           ) : (
             <List
               taskPools={openTasksPools}
-              selectedTaskPoolId={undefined}
-              // selectedTaskPoolId={selectedTaskPool?.id}
+              selectedTaskPoolId={selectedTaskPoolId}
             />
           )}
         </Flex>
@@ -85,8 +81,7 @@ export default function TaskPoolList() {
           ) : (
             <List
               taskPools={closedTasksPools}
-              // selectedTaskPoolId={selectedTaskPool?.id}
-              selectedTaskPoolId={undefined}
+              selectedTaskPoolId={selectedTaskPoolId}
             />
           )}
         </Flex>

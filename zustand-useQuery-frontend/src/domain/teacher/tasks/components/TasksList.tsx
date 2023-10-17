@@ -4,10 +4,13 @@ import AddClosedTaskModal from "../closedTasks/components/AddClosedTaskModal";
 import { TaskType } from "@/domain/student/papers/model/Task";
 import OpenTaskList from "../openTasks/components/OpenTaskList";
 import ClosedTaskList from "../closedTasks/components/ClosedTaskList";
+import { useTaskPoolStore } from "../../taskPools/store/taskPoolStore";
 
-export function TasksList() {
-  const selectedTaskPool = {} as TaskPool;
+type Props = {
+  selectedTaskPool?: TaskPool;
+};
 
+export function TasksList({ selectedTaskPool }: Props) {
   if (!selectedTaskPool) {
     return <NotSelectedList />;
   }
