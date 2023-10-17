@@ -1,85 +1,99 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import { Flex, Text, Spacer, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import EditClosedTaskModal from "./EditClosedTaskModal";
-import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
+import { ClosedTask } from "@/domain/student/papers/model/Task";
+import ClosedTaskTile from "./ClosedTaskTile";
+import {
+  useGetClosedTasksQuery,
+  usePostClosedTaskMutation,
+} from "@/domain/store/teacher";
 
-export default function ClosedTaskList() {
-  const { query, push } = useRouter();
+type Props = {
+  taskPoolId: string;
+  taskPoolTitle: string;
+};
+
+export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
+  const { query } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
-  const taskPoolId = query.taskPoolId as string;
 
-  const tasks: ClosedTask[] = [];
-  const addClosedTask = () => {};
-  const deleteTask = () => {};
-  const editClosedTask = () => {};
+  const { data: tasks, isLoading } = useGetClosedTasksQuery({
+    courseId,
+    examId,
+    taskPoolId,
+  });
 
-  if (false) {
-    return <InfoSpinner details="Ładowanie zadań" />;
+  const [postClosedTask, { isLoading: isPostClosedTaskLoading }] =
+    usePostClosedTaskMutation();
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
-    <Flex direction="row" justifyContent="space-between">
+    <Flex
+      direction="row"
+      justifyContent="space-between"
+      flexGrow="1"
+      flexBasis="0"
+    >
       <Flex direction="column" width="80%">
         <Flex direction="row" alignItems="baseline">
           <Text mt="8" fontSize="lg" fontWeight="bold">
-            Pula zadań zamkniętych
+            Lista zadań zamkniętych dla
+            <Text textColor="cyan.600">{taskPoolTitle}</Text>
           </Text>
           <Spacer />
           <AddClosedTaskModal
-            addClosedTask={({ title, taskContent, penaltyWeight, answers }) =>
-              addClosedTask()
+            isLoading={isPostClosedTaskLoading}
+            addClosedTask={(payload) =>
+              postClosedTask({ courseId, examId, taskPoolId, payload })
             }
           />
         </Flex>
 
-        {tasks?.length === 0 ? (
-          <Text my="4" color="red.500">
-            Brak zadań w puli
-          </Text>
+        {tasks && tasks?.length > 0 ? (
+          <List tasks={tasks} taskPoolId={taskPoolId} />
         ) : (
-          <Flex direction="column" my="4">
-            {tasks?.map((task) => {
-              return (
-                <Box
-                  key={task.title}
-                  width="100%"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  p="2"
-                  my="1"
-                >
-                  <Stack>
-                    <Flex justifyContent="space-between" alignItems="center">
-                      <Text fontSize="medium" fontWeight="bold">
-                        {task.title}
-                      </Text>
-                      <Stack direction="row">
-                        <EditClosedTaskModal
-                          closedTask={task}
-                          editClosedTask={(params) => editClosedTask()}
-                        />
-                        <IconButton
-                          aria-label="delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteTask();
-                          }}
-                          icon={<SmallCloseIcon />}
-                        />
-                      </Stack>
-                    </Flex>
-                    <Text fontSize="medium">{task.content}</Text>
-                  </Stack>
-                </Box>
-              );
-            })}
-          </Flex>
+          <EmptyList />
         )}
       </Flex>
     </Flex>
   );
+}
+
+function EmptyList() {
+  return (
+    <Text my="4" color="red.500">
+      Brak zadań zamkniętych. Dodaj nowe zadania
+    </Text>
+  );
+}
+
+function List({
+  tasks,
+  taskPoolId,
+}: {
+  tasks: ClosedTask[];
+  taskPoolId: string;
+}) {
+  return (
+    <Flex direction="column" my="4">
+      {tasks?.map((task) => {
+        return (
+          <ClosedTaskTile key={task.id} task={task} taskPoolId={taskPoolId} />
+        );
+      })}
+    </Flex>
+  );
+}
+
+function Loader() {
+  return <InfoSpinner details="Ładowanie pul zadań" />;
+}
+
+function Error() {
+  return <div>Wystąpił błąd podczas ładowanie pól zadań</div>;
 }

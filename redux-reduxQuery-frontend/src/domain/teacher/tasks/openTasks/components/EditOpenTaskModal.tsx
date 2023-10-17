@@ -19,6 +19,7 @@ import { EditIcon } from "@chakra-ui/icons";
 
 type Props = {
   openTask: OpenTask;
+  isLoading?: boolean;
   editOpenTask: ({
     id,
     title,
@@ -30,7 +31,11 @@ type Props = {
   }) => void;
 };
 
-export default function EditOpenTaskModal({ openTask, editOpenTask }: Props) {
+export default function EditOpenTaskModal({
+  openTask,
+  isLoading,
+  editOpenTask,
+}: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [title, setTitle] = useState(openTask.title);
@@ -70,6 +75,7 @@ export default function EditOpenTaskModal({ openTask, editOpenTask }: Props) {
         aria-label="edit"
         onClick={() => onOpen()}
         icon={<EditIcon />}
+        isLoading={isLoading}
       />
 
       <Modal isOpen={isOpen} onClose={onClose}>

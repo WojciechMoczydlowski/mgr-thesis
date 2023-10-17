@@ -2,12 +2,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 import { Exam } from "@/domain/teacher/exams/model/exam";
-import { PostExamPayload, PutExamPayload } from "./model";
+import {
+  ClosedTasksRequestParams,
+  PostClosedTaskPayload,
+  PostExamPayload,
+  PutClosedTaskPayload,
+  PutExamPayload,
+} from "./model";
+import { ClosedTask } from "./closedTasks";
 
 // Define a service using a base URL and expected endpoints
 export const teacherApi = createApi({
   reducerPath: "teacherApi",
-  tagTypes: ["Exams"],
+  tagTypes: ["Exams", "ClosedTasks"],
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080/api/v1/teacher/",
     prepareHeaders(headers) {
@@ -21,10 +28,12 @@ export const teacherApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    // COURSES
     getTeacherCourses: builder.query<Exam[], void>({
       query: () => `courses`,
     }),
-    // Exams
+
+    // EXAMS
     getTeacherExams: builder.query<Exam[], { courseId: string }>({
       query: ({ courseId }) => `courses/${courseId}`,
       providesTags: (result) => [
@@ -34,6 +43,7 @@ export const teacherApi = createApi({
           : []),
       ],
     }),
+
     postTeacherExam: builder.mutation<
       void,
       { courseId: string; payload: PostExamPayload }
@@ -72,6 +82,63 @@ export const teacherApi = createApi({
       },
       invalidatesTags: (_, __, arg) => [{ type: "Exams", id: arg.examId }],
     }),
+
+    // CLOSED TASKS
+    getClosedTasks: builder.query<ClosedTask[], ClosedTasksRequestParams>({
+      query: ({ courseId, examId, taskPoolId }) =>
+        `courses/${courseId}/${examId}/${taskPoolId}`,
+      providesTags: (result) => [
+        { type: "ClosedTasks", id: "LIST" },
+        ...(result
+          ? result.map(({ id }) => ({ type: "ClosedTasks", id } as const))
+          : []),
+      ],
+    }),
+    postClosedTask: builder.mutation<
+      void,
+      ClosedTasksRequestParams & { payload: PostClosedTaskPayload }
+    >({
+      query({ courseId, examId, taskPoolId, payload }) {
+        return {
+          url: `courses/${courseId}/${examId}/${taskPoolId}`,
+          method: "POST",
+          body: payload,
+        };
+      },
+      invalidatesTags: [{ type: "ClosedTasks", id: "LIST" }],
+    }),
+    deleteClosedTask: builder.mutation<
+      void,
+      ClosedTasksRequestParams & { taskId: string }
+    >({
+      query({ examId, courseId, taskPoolId, taskId }) {
+        return {
+          url: `courses/${courseId}/${examId}/${taskPoolId}/${taskId}`,
+          method: `DELETE`,
+        };
+      },
+      invalidatesTags: (_, __, arg) => [
+        { type: "ClosedTasks", id: arg.taskId },
+      ],
+    }),
+    putClosedTask: builder.mutation<
+      void,
+      ClosedTasksRequestParams & {
+        taskId: string;
+        payload: PutClosedTaskPayload;
+      }
+    >({
+      query({ examId, courseId, taskPoolId, taskId, payload }) {
+        return {
+          url: `courses/${courseId}/${examId}/${taskPoolId}/${taskId}`,
+          method: `PUT`,
+          body: payload,
+        };
+      },
+      invalidatesTags: (_, __, arg) => [
+        { type: "ClosedTasks", id: arg.taskId },
+      ],
+    }),
   }),
 });
 
@@ -85,4 +152,9 @@ export const {
   usePostTeacherExamMutation,
   usePutTeacherExamMutation,
   useDeleteTeacherExamMutation,
+  // closedTasks
+  useGetClosedTasksQuery,
+  usePostClosedTaskMutation,
+  useDeleteClosedTaskMutation,
+  usePutClosedTaskMutation,
 } = teacherApi;

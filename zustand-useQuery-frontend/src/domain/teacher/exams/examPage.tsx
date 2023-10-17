@@ -8,6 +8,7 @@ import { useGenerateExam } from "./endpoints/useGenerateExam";
 import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
+import { ExamHeader } from "./components";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -35,25 +36,14 @@ export function TeacherExamPage() {
 
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId })}>
-      <Container>
-        <Flex direction="column">
-          <Text fontSize="lg" fontWeight="bold">
-            Szczegóły
-          </Text>
-          <Text>Przedmiot: {courseId}</Text>
-          <Text>Tytuł egzaminu: {examDetails?.title}</Text>
-          <Text>Opis egzaminu: {examDetails?.description}</Text>
-        </Flex>
-
-        <Button
-          mt="4"
-          variant="outline"
-          colorScheme="purple"
-          isDisabled={isEditingDisabled}
-          onClick={() => generateExam({})}
-        >
-          Generuj egzamin dla studentów
-        </Button>
+      <Container maxW="8xl">
+        <ExamHeader
+          courseName="mocked course name"
+          examDescription={examDetails?.description ?? ""}
+          examTitle={examDetails?.title ?? ""}
+          generateExam={() => generateExam({})}
+          isEditingDisabled={isEditingDisabled}
+        />
 
         <TaskPoolList />
       </Container>

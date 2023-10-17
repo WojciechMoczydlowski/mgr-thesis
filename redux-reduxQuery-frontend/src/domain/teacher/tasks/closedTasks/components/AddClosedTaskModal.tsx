@@ -16,14 +16,15 @@ import {
 import { useState, useEffect } from "react";
 
 type Props = {
+  isLoading?: boolean;
   addClosedTask: ({
     title,
-    taskContent,
+    content,
     penaltyWeight,
     answers,
   }: {
     title: string;
-    taskContent: string;
+    content: string;
     penaltyWeight: number;
     answers: {
       content: string;
@@ -43,7 +44,7 @@ export default function AddClosedTaskModal({ addClosedTask }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [title, setTitle] = useState("");
-  const [taskContent, setTaskContent] = useState("");
+  const [content, setTaskContent] = useState("");
   const [penaltyWeight, setPenaltyWeight] = useState<number>();
   const [taskError, setTaskError] = useState("");
 
@@ -54,10 +55,10 @@ export default function AddClosedTaskModal({ addClosedTask }: Props) {
   };
 
   const onSubmit = () => {
-    if (title && taskContent && penaltyWeight) {
+    if (title && content && penaltyWeight) {
       addClosedTask({
         title,
-        taskContent,
+        content,
         penaltyWeight,
         answers,
       });
@@ -127,7 +128,7 @@ export default function AddClosedTaskModal({ addClosedTask }: Props) {
 
               <Input
                 placeholder="Treść zadania"
-                value={taskContent}
+                value={content}
                 onChange={(event) => setTaskContent(event.currentTarget.value)}
               />
 
