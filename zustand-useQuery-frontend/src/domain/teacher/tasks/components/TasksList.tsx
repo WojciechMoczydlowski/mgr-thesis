@@ -2,18 +2,34 @@ import { Flex, Text, Spacer } from "@chakra-ui/react";
 import AddOpenTaskModal from "../openTasks/components/AddOpenTaskModal";
 import AddClosedTaskModal from "../closedTasks/components/AddClosedTaskModal";
 import { TaskType } from "@/domain/student/papers/model/Task";
-
-const taskType: TaskType | undefined = undefined;
+import OpenTaskList from "../openTasks/components/OpenTaskList";
+import ClosedTaskList from "../closedTasks/components/ClosedTaskList";
 
 export function TasksList() {
+  const selectedTaskPool = {} as TaskPool;
+
+  if (!selectedTaskPool) {
+    return <NotSelectedList />;
+  }
+
   return (
-    <Flex flexGrow="1">
+    <Flex flexGrow="1" flexBasis="0">
       {(() => {
-        switch (taskType) {
+        switch (selectedTaskPool.taskType) {
           case TaskType.OPEN:
-            return <OpenTasksList />;
+            return (
+              <OpenTaskList
+                taskPoolId={selectedTaskPool.id}
+                taskPoolTitle={selectedTaskPool.title}
+              />
+            );
           case TaskType.CLOSED:
-            return <ClosedTasksList />;
+            return (
+              <ClosedTaskList
+                taskPoolId={selectedTaskPool.id}
+                taskPoolTitle={selectedTaskPool.title}
+              />
+            );
           default:
             return <NotSelectedList />;
         }
@@ -22,39 +38,14 @@ export function TasksList() {
   );
 }
 
-function OpenTasksList() {
-  return (
-    <Flex flexGrow="1" direction="column">
-      <Flex alignItems="baseline">
-        <Text mt="8" fontSize="lg" fontWeight="bold">
-          Zadania otwarte
-        </Text>
-        <Spacer />
-        <AddOpenTaskModal addOpenTask={() => {}} />
-      </Flex>
-      <Flex direction="column">Lista zadań otwartych</Flex>
-    </Flex>
-  );
-}
-
-function ClosedTasksList() {
-  return (
-    <Flex flexGrow="1" direction="column">
-      <Flex alignItems="baseline">
-        <Text mt="8" fontSize="lg" fontWeight="bold">
-          Zadania zamknięte
-        </Text>
-        <Spacer />
-        <AddClosedTaskModal addClosedTask={() => {}} />
-      </Flex>
-      <Flex direction="column">Lista zadań</Flex>
-    </Flex>
-  );
-}
-
 function NotSelectedList() {
   return (
-    <Flex flexGrow="1" alignItems="center" justifyContent="center">
+    <Flex
+      flexGrow="1"
+      flexBasis="0"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Text fontSize="medium">Proszę wybrać pulę zadań do edycji</Text>
     </Flex>
   );

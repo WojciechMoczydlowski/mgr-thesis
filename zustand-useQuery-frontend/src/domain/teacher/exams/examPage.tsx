@@ -9,6 +9,7 @@ import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { ExamHeader } from "./components";
+import { TasksList } from "../tasks/components";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -39,13 +40,16 @@ export function TeacherExamPage() {
       <Container maxW="8xl">
         <ExamHeader
           courseName="mocked course name"
-          examDescription={examDetails?.description ?? ""}
-          examTitle={examDetails?.title ?? ""}
-          generateExam={() => generateExam({})}
-          isEditingDisabled={isEditingDisabled}
+          examDescription="mocked exam description"
+          examTitle="mocked exam title"
+          generateExam={() => {}}
+          isEditingDisabled
         />
 
-        <TaskPoolList />
+        <Flex flexGrow="1">
+          <TaskPoolList />
+          <TasksList />
+        </Flex>
       </Container>
     </Layout>
   );
