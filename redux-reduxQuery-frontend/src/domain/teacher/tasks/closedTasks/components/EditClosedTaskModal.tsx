@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 
 type Props = {
   closedTask: ClosedTask;
+  isLoading?: boolean;
   editClosedTask: ({
     taskId,
     title,
@@ -47,6 +48,7 @@ const initAnswerState = {
 
 export default function EditClosedTaskModal({
   closedTask,
+  isLoading,
   editClosedTask,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -191,6 +193,7 @@ export default function EditClosedTaskModal({
                 variant="outline"
                 mr={3}
                 onClick={addNewAnswer}
+                isLoading={isLoading}
               >
                 Dodaj kolejną odpowiedź
               </Button>

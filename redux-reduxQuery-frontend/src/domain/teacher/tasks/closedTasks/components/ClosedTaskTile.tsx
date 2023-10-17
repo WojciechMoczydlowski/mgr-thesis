@@ -5,23 +5,26 @@ import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditClosedTaskModal from "./EditClosedTaskModal";
 import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
+import {
+  useDeleteClosedTaskMutation,
+  usePutClosedTaskMutation,
+} from "@/domain/store/teacher";
 
 type Props = {
   task: ClosedTask;
+  taskPoolId: string;
 };
 
-export default function ClosedTaskTile({ task }: Props) {
+export default function ClosedTaskTile({ task, taskPoolId }: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
-  const taskPoolId = query.taskPoolId as string;
+  const taskId = task.id;
 
-  const deleteTask = () => {};
-  const editClosedTask = () => {};
-
-  if (false) {
-    return <InfoSpinner details="Ładowanie zadań" />;
-  }
+  const [deleteTask, { isLoading: isDeleteClosedTaskLoading }] =
+    useDeleteClosedTaskMutation();
+  const [editTask, { isLoading: isEditTaskLoading }] =
+    usePutClosedTaskMutation();
 
   return (
     <Box
@@ -39,14 +42,18 @@ export default function ClosedTaskTile({ task }: Props) {
           </Text>
           <Stack direction="row">
             <EditClosedTaskModal
+              isLoading={isEditTaskLoading}
               closedTask={task}
-              editClosedTask={(params) => editClosedTask()}
+              editClosedTask={(payload) =>
+                editTask({ courseId, examId, taskPoolId, taskId, payload })
+              }
             />
             <IconButton
+              isLoading={isDeleteClosedTaskLoading}
               aria-label="delete"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteTask();
+                deleteTask({ courseId, examId, taskPoolId, taskId });
               }}
               icon={<SmallCloseIcon />}
             />

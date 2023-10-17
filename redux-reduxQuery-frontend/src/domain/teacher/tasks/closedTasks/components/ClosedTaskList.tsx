@@ -1,11 +1,13 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import { Flex, Text, Spacer, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import EditClosedTaskModal from "./EditClosedTaskModal";
-import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
+import { ClosedTask } from "@/domain/student/papers/model/Task";
 import ClosedTaskTile from "./ClosedTaskTile";
+import {
+  useGetClosedTasksQuery,
+  usePostClosedTaskMutation,
+} from "@/domain/store/teacher";
 
 type Props = {
   taskPoolId: string;
@@ -13,16 +15,20 @@ type Props = {
 };
 
 export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
-  const { query, push } = useRouter();
+  const { query } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const tasks: ClosedTask[] = [];
-  const addClosedTask = () => {};
-  const deleteTask = () => {};
-  const editClosedTask = () => {};
+  const { data: tasks, isLoading } = useGetClosedTasksQuery({
+    courseId,
+    examId,
+    taskPoolId,
+  });
 
-  if (false) {
+  const [postClosedTask, { isLoading: isPostClosedTaskLoading }] =
+    usePostClosedTaskMutation();
+
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -41,13 +47,18 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
           </Text>
           <Spacer />
           <AddClosedTaskModal
-            addClosedTask={({ title, taskContent, penaltyWeight, answers }) =>
-              addClosedTask()
+            isLoading={isPostClosedTaskLoading}
+            addClosedTask={(payload) =>
+              postClosedTask({ courseId, examId, taskPoolId, payload })
             }
           />
         </Flex>
 
-        {tasks?.length === 0 ? <EmptyList /> : <List tasks={tasks} />}
+        {tasks && tasks?.length > 0 ? (
+          <List tasks={tasks} taskPoolId={taskPoolId} />
+        ) : (
+          <EmptyList />
+        )}
       </Flex>
     </Flex>
   );
@@ -61,11 +72,19 @@ function EmptyList() {
   );
 }
 
-function List({ tasks }: { tasks: ClosedTask[] }) {
+function List({
+  tasks,
+  taskPoolId,
+}: {
+  tasks: ClosedTask[];
+  taskPoolId: string;
+}) {
   return (
     <Flex direction="column" my="4">
       {tasks?.map((task) => {
-        return <ClosedTaskTile key={task.id} task={task} />;
+        return (
+          <ClosedTaskTile key={task.id} task={task} taskPoolId={taskPoolId} />
+        );
       })}
     </Flex>
   );
