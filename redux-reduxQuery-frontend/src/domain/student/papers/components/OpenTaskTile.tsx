@@ -9,8 +9,6 @@ type Props = {
 };
 
 export function OpenTaskTile({ task, onUpdate }: Props) {
-  console.log(task.answer);
-
   const [value, setValue] = useState<string>(task.answer);
 
   const debouncedUpdate = useMemo(() => debounce(onUpdate, 1000), [onUpdate]);

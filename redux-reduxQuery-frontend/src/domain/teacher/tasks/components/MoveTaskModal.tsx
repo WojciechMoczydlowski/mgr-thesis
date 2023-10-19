@@ -30,22 +30,22 @@ type Props = {
   }) => void;
 };
 
-export default function MoveClosedTaskModal({
+export default function MoveTaskModal({
   sourceTaskPool,
   destitaionTaskPools,
   isLoading,
+
   moveClosedTask,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedDestinationTaskPoolId, setSelectedDestinationTaskPoolId] =
-    useState("");
+  const [destinationTaskPoolId, setDestinationTaskPoolId] = useState("");
 
   const [error, setError] = useState("");
 
   const onSubmit = () => {
-    if (selectedDestinationTaskPoolId) {
+    if (destinationTaskPoolId) {
       moveClosedTask({
-        destinationTaskPoolId: selectedDestinationTaskPoolId,
+        destinationTaskPoolId: destinationTaskPoolId,
       });
       onClose();
     } else {
@@ -54,7 +54,7 @@ export default function MoveClosedTaskModal({
   };
 
   const clearInputs = () => {
-    setSelectedDestinationTaskPoolId("");
+    setDestinationTaskPoolId("");
   };
 
   useEffect(() => {
@@ -65,7 +65,6 @@ export default function MoveClosedTaskModal({
     <>
       <IconButton
         aria-label="move"
-        colorScheme="purple"
         onClick={onOpen}
         isLoading={isLoading}
         icon={<ArrowForwardIcon />}
@@ -81,8 +80,9 @@ export default function MoveClosedTaskModal({
           <ModalBody>
             <Stack>
               <Select
+                placeholder="Wybierz pulę zadań"
                 onChange={(event) =>
-                  setSelectedDestinationTaskPoolId(event.currentTarget.value)
+                  setDestinationTaskPoolId(event.currentTarget.value)
                 }
               >
                 {destitaionTaskPools.map((taskPool) => (
@@ -91,6 +91,7 @@ export default function MoveClosedTaskModal({
                   </option>
                 ))}
               </Select>
+              {error && <Text color="red">Wybierz pulę zadań</Text>}
             </Stack>
           </ModalBody>
 

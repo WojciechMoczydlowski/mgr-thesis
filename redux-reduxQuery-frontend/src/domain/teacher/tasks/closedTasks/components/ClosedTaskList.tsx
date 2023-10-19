@@ -54,11 +54,7 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
           />
         </Flex>
 
-        {tasks && tasks?.length > 0 ? (
-          <List tasks={tasks} taskPoolId={taskPoolId} />
-        ) : (
-          <EmptyList />
-        )}
+        {tasks && tasks?.length > 0 ? <List tasks={tasks} /> : <EmptyList />}
       </Flex>
     </Flex>
   );
@@ -72,19 +68,11 @@ function EmptyList() {
   );
 }
 
-function List({
-  tasks,
-  taskPoolId,
-}: {
-  tasks: ClosedTask[];
-  taskPoolId: string;
-}) {
+function List({ tasks }: { tasks: ClosedTask[] }) {
   return (
     <Flex direction="column" my="4">
       {tasks?.map((task) => {
-        return (
-          <ClosedTaskTile key={task.id} task={task} taskPoolId={taskPoolId} />
-        );
+        return <ClosedTaskTile key={task.id} task={task} />;
       })}
     </Flex>
   );
