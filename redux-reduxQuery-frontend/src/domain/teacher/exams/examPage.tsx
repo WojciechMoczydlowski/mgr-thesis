@@ -9,6 +9,7 @@ import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { ExamDetails } from "@/domain/student/exams/model/ExamDetails";
 import { ExamHeader } from "./components";
 import { TasksList } from "../tasks/components/TasksList";
+import { formatDate } from "@/utils/formatDate";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -39,6 +40,38 @@ export function TeacherExamPage() {
     </Layout>
   );
 }
+
+const buttonLabel = (exam: ExamDetails) => {
+  const currentDate = new Date();
+  const startDate = new Date(exam.dateTimeStart);
+  const endDate = new Date(exam.dateTimeEnd);
+
+  if (currentDate > endDate) {
+    return `Egzamin zakończył się o ${formatDate(exam.dateTimeEnd)}`;
+  }
+
+  if (currentDate < startDate) {
+    return `Egzamin rozpocznie się o ${formatDate(exam.dateTimeStart)}`;
+  }
+
+  if (exam.status === ExamStatus.WRITING) {
+    return "Wróć do arkusza";
+  }
+
+  return "Rozpocznij egzamin";
+};
+
+const isButtonDisabled = (exam: ExamDetails) => {
+  const currentDate = new Date();
+  const startDate = new Date(exam.dateTimeStart);
+  const endDate = new Date(exam.dateTimeEnd);
+
+  if (currentDate > endDate || currentDate < startDate) {
+    return true;
+  }
+
+  return false;
+};
 
 const makeBreadcrumbs = ({ courseId }: { courseId: string }): Breadcrumb[] => [
   { name: "Kursy", link: routes.teacher.main.make() },

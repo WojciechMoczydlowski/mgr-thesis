@@ -4,15 +4,10 @@ import { routes } from "@/utils/routes";
 import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
-import { useAppDispatch } from "@/domain/store";
-import {
-  updateOpenTaskThunk,
-  deleteTasksPoolThunk,
-  TaskPool,
-  unSelectTaskPool,
-  selectTaskPool,
-} from "@/domain/store/teacher";
-import { useRunInTask } from "@/utils/index";
+import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
+import { useEditTaskPool } from "../endpoints/useEditTaskPool";
+import { useTaskPoolById } from "../endpoints/useTaskPoolById";
+import { useTaskPoolStore } from "../store/taskPoolStore";
 
 type Props = {
   taskPool: TaskPool;
@@ -24,42 +19,16 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
-  const dispatch = useAppDispatch();
-  const toast = useToast();
+  const { mutate: deleteTaskPool } = useDeleteTaskPool({ courseId, examId });
+  const { mutate: editTaskPool } = useEditTaskPool({ courseId, examId });
 
-  const { runInTask: runUpdateTasksPoolTask } = useRunInTask({
-    onError: () =>
-      toast({
-        status: "error",
-        title: "Błąd podczas edycji puli zadań",
-      }),
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "Pula zadań pomyślnie edytowana",
-      });
-    },
-  });
-
-  const { runInTask: runDeleteTasksPoolTask } = useRunInTask({
-    onError: () =>
-      toast({
-        status: "error",
-        title: "Błąd podczas usuwania puli zadań",
-      }),
-    onSuccess: () => {
-      toast({
-        status: "success",
-        title: "Pula zadań pomyślnie usunięta",
-      });
-    },
-  });
+  const { selectTaskPool, unSelectTaskPool } = useTaskPoolStore();
 
   const onTileClick = () => {
     if (isSelected) {
-      dispatch(unSelectTaskPool());
+      unSelectTaskPool();
     } else {
-      dispatch(selectTaskPool({ id: taskPool.id }));
+      selectTaskPool({ id: taskPool.id });
     }
   };
 
@@ -84,31 +53,14 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
             <EditTaskPoolModal
               taskPool={taskPool}
               editTaskPool={(params) =>
-                runUpdateTasksPoolTask(() =>
-                  dispatch(
-                    updateOpenTaskThunk({
-                      courseId,
-                      examId,
-                      taskId: taskPool.id,
-                      ...params,
-                    })
-                  )
-                )
+                editTaskPool({ ...params, taskPoolId: taskPool.id })
               }
             />
             <IconButton
               aria-label="delete"
               onClick={(e) => {
                 e.stopPropagation();
-                runDeleteTasksPoolTask(() =>
-                  dispatch(
-                    deleteTasksPoolThunk({
-                      courseId,
-                      examId,
-                      tasksPoolId: taskPool.id,
-                    })
-                  )
-                );
+                deleteTaskPool({ taskPoolId: taskPool.id });
               }}
               icon={<SmallCloseIcon />}
             />

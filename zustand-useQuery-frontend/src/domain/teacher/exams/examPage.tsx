@@ -9,6 +9,9 @@ import { routes } from "@/utils/routes";
 import { Breadcrumb } from "@/components/layout/Breadcrumbs/model/Breadcrumbs";
 import { ExamStatus } from "@/domain/exam/model/ExamStatus";
 import { ExamHeader } from "./components";
+import { TasksList } from "../tasks/components";
+import { useTaskPools } from "../taskPools/endpoints/useTaskPools";
+import { useTaskPoolStore } from "../taskPools/store/taskPoolStore";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -28,6 +31,21 @@ export function TeacherExamPage() {
     },
   });
 
+  const {
+    data: taskPools,
+    isLoading: isTaskPoolsLoading,
+    isError,
+  } = useTaskPools({
+    courseId,
+    examId,
+  });
+
+  const { selectedTaskPoolId } = useTaskPoolStore();
+
+  const selectedTaskPool = taskPools?.find(
+    (taskPool) => taskPool.id === selectedTaskPoolId
+  );
+
   if (isExamDetailsLoading) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
   }
@@ -39,13 +57,20 @@ export function TeacherExamPage() {
       <Container maxW="8xl">
         <ExamHeader
           courseName="mocked course name"
-          examDescription={examDetails?.description ?? ""}
-          examTitle={examDetails?.title ?? ""}
-          generateExam={() => generateExam({})}
-          isEditingDisabled={isEditingDisabled}
+          examDescription="mocked exam description"
+          examTitle="mocked exam title"
+          generateExam={() => {}}
+          isEditingDisabled
         />
 
-        <TaskPoolList />
+        <Flex flexGrow="1">
+          <TaskPoolList
+            taskPools={taskPools}
+            isLoading={isTaskPoolsLoading}
+            isError={isError}
+          />
+          <TasksList selectedTaskPool={selectedTaskPool} />
+        </Flex>
       </Container>
     </Layout>
   );

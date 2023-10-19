@@ -11,11 +11,11 @@ import { useRouter } from "next/router";
 import AddTaskModal from "./AddOpenTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { OpenTask } from "@/domain/student/papers/model/Task";
 import OpenTaskTile from "./OpenTaskTile";
 import { useAppDispatch } from "@/domain/store";
 import { useSelector } from "react-redux";
 import {
+  OpenTask,
   addOpenTaskThunk,
   fetchOpenTasksThunk,
   selectOpenTasks,
