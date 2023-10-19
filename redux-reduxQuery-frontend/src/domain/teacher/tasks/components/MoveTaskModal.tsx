@@ -23,7 +23,7 @@ type Props = {
   destitaionTaskPools: TaskPool[];
   isLoading?: boolean;
 
-  moveClosedTask: ({
+  moveTask: ({
     destinationTaskPoolId,
   }: {
     destinationTaskPoolId: string;
@@ -35,7 +35,7 @@ export default function MoveTaskModal({
   destitaionTaskPools,
   isLoading,
 
-  moveClosedTask,
+  moveTask,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [destinationTaskPoolId, setDestinationTaskPoolId] = useState("");
@@ -44,7 +44,7 @@ export default function MoveTaskModal({
 
   const onSubmit = () => {
     if (destinationTaskPoolId) {
-      moveClosedTask({
+      moveTask({
         destinationTaskPoolId: destinationTaskPoolId,
       });
       onClose();

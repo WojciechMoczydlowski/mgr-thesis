@@ -71,7 +71,7 @@ export default function ClosedTaskTile({ task }: Props) {
               sourceTaskPool={selectedTaskPool}
               destitaionTaskPools={destitaionTaskPools}
               isLoading={isMoveClosedTaskLoading}
-              moveClosedTask={moveClosedTask}
+              moveTask={moveClosedTask}
             />
             <EditClosedTaskModal
               isLoading={isEditTaskLoading}

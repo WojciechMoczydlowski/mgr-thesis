@@ -6,23 +6,31 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
 import { OpenTask } from "@/domain/student/papers/model/Task";
 import { useRunInTask } from "@/utils/useRunInTask";
-import { useAppDispatch } from "@/domain/store";
+import { useAppDispatch, useAppSelector } from "@/domain/store";
 import {
   deleteOpenTaskThunk,
+  moveOpenTaskThunk,
   updateOpenTaskThunk,
 } from "@/domain/store/teacher";
+import MoveTaskModal from "../../components/MoveTaskModal";
+import {
+  selectOpenTasksPools,
+  selectSelectedTaskPool,
+} from "@/domain/store/teacher/pools/selectors";
 
 type Props = {
   task: OpenTask;
-  taskPoolId: string;
 };
 
-export default function OpenTaskTile({ task, taskPoolId }: Props) {
+export default function OpenTaskTile({ task }: Props) {
   const { query } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
   const dispatch = useAppDispatch();
+
+  const selectedTaskPool = useAppSelector(selectSelectedTaskPool);
+  const openTaskPools = useAppSelector(selectOpenTasksPools);
 
   const { isRunning: isEditOpenTaskLoading, runInTask: runEditOpenTaskTask } =
     useRunInTask();
@@ -32,9 +40,17 @@ export default function OpenTaskTile({ task, taskPoolId }: Props) {
     runInTask: runDeleteOpenTaskTask,
   } = useRunInTask();
 
-  if (false) {
-    return <InfoSpinner details="Ładowanie zadań" />;
+  const { isRunning: isMoveOpenTaskLoading, runInTask: runMoveOpenTaskTask } =
+    useRunInTask();
+
+  if (!selectedTaskPool) {
+    return <Text>Proszę wybrać pulę zadań</Text>;
   }
+
+  const taskPoolId = selectedTaskPool.id;
+  const destitaionTaskPools = openTaskPools.filter(
+    (taskPool) => taskPool !== selectedTaskPool
+  );
 
   return (
     <Box
@@ -51,6 +67,24 @@ export default function OpenTaskTile({ task, taskPoolId }: Props) {
             {task.title}
           </Text>
           <Stack direction="row">
+            <MoveTaskModal
+              isLoading={isMoveOpenTaskLoading}
+              sourceTaskPool={selectedTaskPool}
+              destitaionTaskPools={destitaionTaskPools}
+              moveTask={(params) =>
+                runMoveOpenTaskTask(() =>
+                  dispatch(
+                    moveOpenTaskThunk({
+                      courseId,
+                      examId,
+                      sourcePoolId: taskPoolId,
+                      task,
+                      ...params,
+                    })
+                  )
+                )
+              }
+            />
             <EditOpenTaskModal
               openTask={task}
               isLoading={isEditOpenTaskLoading}
