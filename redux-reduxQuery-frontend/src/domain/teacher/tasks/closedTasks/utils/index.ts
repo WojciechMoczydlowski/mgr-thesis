@@ -1,1 +1,1 @@
-export * from "./moveClosedTask";
+export * from "./useMoveClosedTask";

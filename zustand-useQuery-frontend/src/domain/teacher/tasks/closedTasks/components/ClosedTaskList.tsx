@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import EditClosedTaskModal from "./EditClosedTaskModal";
 import { useEditClosedTask } from "../endpoints/useEditClosedTask";
 import { useAddClosedTask } from "../endpoints/useAddClosedTask";
