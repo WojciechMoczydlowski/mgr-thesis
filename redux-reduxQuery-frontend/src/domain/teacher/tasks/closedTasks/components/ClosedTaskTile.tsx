@@ -9,22 +9,48 @@ import {
   useDeleteClosedTaskMutation,
   usePutClosedTaskMutation,
 } from "@/domain/store/teacher";
+import MoveTaskModal from "../../components/MoveTaskModal";
+import { useAppSelector } from "@/domain/store";
+import {
+  selectClosedTasksPools,
+  selectSelectedTaskPool,
+} from "@/domain/store/teacher/pools/selectors";
+import { useMoveClosedTask } from "../utils";
 
 type Props = {
   task: ClosedTask;
-  taskPoolId: string;
 };
 
-export default function ClosedTaskTile({ task, taskPoolId }: Props) {
+export default function ClosedTaskTile({ task }: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
   const taskId = task.id;
 
+  const selectedTaskPool = useAppSelector(selectSelectedTaskPool);
+  const closedTaskPools = useAppSelector(selectClosedTasksPools);
+
   const [deleteTask, { isLoading: isDeleteClosedTaskLoading }] =
     useDeleteClosedTaskMutation();
   const [editTask, { isLoading: isEditTaskLoading }] =
     usePutClosedTaskMutation();
+
+  const { isLoading: isMoveClosedTaskLoading, moveClosedTask } =
+    useMoveClosedTask({
+      courseId,
+      examId,
+      sourceTaskPoolId: selectedTaskPool?.id!,
+      task,
+    });
+
+  if (!selectedTaskPool) {
+    return <Text>Proszę wybrać pulę zadań</Text>;
+  }
+
+  const taskPoolId = selectedTaskPool.id;
+  const destitaionTaskPools = closedTaskPools.filter(
+    (taskPool) => taskPool !== selectedTaskPool
+  );
 
   return (
     <Box
@@ -41,6 +67,12 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
             {task.title}
           </Text>
           <Stack direction="row">
+            <MoveTaskModal
+              sourceTaskPool={selectedTaskPool}
+              destitaionTaskPools={destitaionTaskPools}
+              isLoading={isMoveClosedTaskLoading}
+              moveTask={moveClosedTask}
+            />
             <EditClosedTaskModal
               isLoading={isEditTaskLoading}
               closedTask={task}

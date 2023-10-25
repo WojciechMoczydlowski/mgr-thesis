@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { OpenTask } from "../model/openTask";
-import { useOpenTasks } from "../endPoints/useOpenTasks";
-import { useAddOpenTask } from "../endPoints/useAddOpenTask";
-import { useEditOpenTask } from "../endPoints/useEditOpenTask";
+import { useOpenTasks } from "../endpoints/useOpenTasks";
+import { useAddOpenTask } from "../endpoints/useAddOpenTask";
+import { useEditOpenTask } from "../endpoints/useEditOpenTask";
 import OpenTaskTile from "./OpenTaskTile";
 import AddOpenTaskModal from "./AddOpenTaskModal";
 

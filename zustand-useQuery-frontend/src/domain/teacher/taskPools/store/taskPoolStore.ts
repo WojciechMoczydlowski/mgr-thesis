@@ -8,6 +8,7 @@ interface TaskPoolStore {
 
 export const useTaskPoolStore = create<TaskPoolStore>()((set) => ({
   selectedTaskPoolId: undefined,
-  selectTaskPool: ({ id }) => set(() => ({ selectedTaskPoolId: id })),
+  selectTaskPool: ({ id }) =>
+    set(() => ({ selectedTaskPoolId: Number(id) as unknown as string })),
   unSelectTaskPool: () => set(() => ({ selectedTaskPoolId: undefined })),
 }));

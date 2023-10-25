@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type RequestParams = {
   courseId: string;
   examId: string;
-  taskPoolId: string;
+  taskPoolId?: string;
 };
 
 type RequestBody = {
@@ -13,6 +13,7 @@ type RequestBody = {
   content: string;
   penaltyWeight: number;
   answers: { content: string; weight: number; isCorrect: boolean }[];
+  taskPoolIdFallback?: string;
 };
 
 export function useAddClosedTask({
@@ -24,14 +25,24 @@ export function useAddClosedTask({
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  return useMutation({
-    mutationFn: (body: RequestBody) =>
+  return useMutation<unknown, unknown, RequestBody>({
+    mutationFn: (body) =>
       teacherClient
-        .post<RequestBody>(`/courses/${courseId}/${examId}/${taskPoolId}`, body)
+        .post<RequestBody>(
+          `/courses/${courseId}/${examId}/${
+            taskPoolId ?? body.taskPoolIdFallback
+          }`,
+          body
+        )
         .then((res) => res.data),
-    onSuccess: () => {
+    onSuccess: (_, body) => {
       queryClient.invalidateQueries({
-        queryKey: ["closedTasks", courseId, examId, taskPoolId],
+        queryKey: [
+          "closedTasks",
+          courseId,
+          examId,
+          taskPoolId ?? body.taskPoolIdFallback,
+        ],
       });
       toast({
         status: "success",

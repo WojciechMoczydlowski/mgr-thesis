@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { OpenTask, OpenTaskThunkCommon } from "./model";
 import { teacherClient } from "@/services/backend";
 import { AxiosResponse } from "axios";
+import { selectTaskPool } from "../pools";
 
 export const fetchOpenTasksThunk = createAsyncThunk<
   OpenTask[],
@@ -73,6 +74,60 @@ export const deleteOpenTaskThunk = createAsyncThunk<
       >(`/courses/${courseId}/${examId}/${taskPoolId}/${taskId}`);
 
       thunkAPI.dispatch(fetchOpenTasksThunk({ courseId, examId, taskPoolId }));
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const moveOpenTaskThunk = createAsyncThunk<
+  void,
+  {
+    task: OpenTask;
+    courseId: string;
+    examId: string;
+    destinationTaskPoolId: string;
+    sourcePoolId: string;
+  }
+>(
+  "tasksPools/move",
+  async (
+    { courseId, examId, destinationTaskPoolId, sourcePoolId, task },
+    thunkAPI
+  ) => {
+    const taskId = task.id;
+
+    try {
+      await teacherClient().delete<void, AxiosResponse<OpenTask>>(
+        `/courses/${courseId}/${examId}/${sourcePoolId}/${taskId}`
+      );
+
+      await teacherClient().post<Omit<OpenTask, "id">, AxiosResponse<OpenTask>>(
+        `/courses/${courseId}/${examId}/${destinationTaskPoolId}`,
+        task
+      );
+
+      await thunkAPI.dispatch(
+        fetchOpenTasksThunk({
+          courseId,
+          examId,
+          taskPoolId: sourcePoolId,
+        })
+      );
+
+      await thunkAPI.dispatch(
+        fetchOpenTasksThunk({
+          courseId,
+          examId,
+          taskPoolId: destinationTaskPoolId,
+        })
+      );
+
+      thunkAPI.dispatch(
+        selectTaskPool({
+          id: Number(destinationTaskPoolId) as unknown as string,
+        })
+      );
     } catch (error) {
       throw error;
     }

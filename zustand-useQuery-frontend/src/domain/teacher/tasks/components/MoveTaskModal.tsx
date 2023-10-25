@@ -1,4 +1,3 @@
-import { TaskPool } from "@/domain/store/teacher";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Modal,
@@ -30,7 +29,7 @@ type Props = {
   }) => void;
 };
 
-export default function MoveClosedTaskModal({
+export default function MoveTaskModal({
   sourceTaskPool,
   destitaionTaskPools,
   isLoading,
@@ -65,7 +64,6 @@ export default function MoveClosedTaskModal({
     <>
       <IconButton
         aria-label="move"
-        colorScheme="purple"
         onClick={onOpen}
         isLoading={isLoading}
         icon={<ArrowForwardIcon />}
@@ -81,6 +79,7 @@ export default function MoveClosedTaskModal({
           <ModalBody>
             <Stack>
               <Select
+                placeholder="Wybierz docelową pulę zadań"
                 onChange={(event) =>
                   setSelectedDestinationTaskPoolId(event.currentTarget.value)
                 }

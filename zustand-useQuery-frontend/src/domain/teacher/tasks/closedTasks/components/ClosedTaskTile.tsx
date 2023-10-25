@@ -7,6 +7,12 @@ import EditClosedTaskModal from "./EditClosedTaskModal";
 import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useEditClosedTask } from "../endpoints/useEditClosedTask";
+import MoveTaskModal from "../../components/MoveTaskModal";
+import { useMoveClosedTask } from "../endpoints/useMoveClosedTask";
+import {
+  useClosedTaskPools,
+  useTaskPoolById,
+} from "@/domain/teacher/taskPools/endpoints/useTaskPools";
 
 type Props = {
   task: ClosedTask;
@@ -18,6 +24,12 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
   const taskId = task.id;
+
+  const { data: closedTaskPools } = useClosedTaskPools({ courseId, examId });
+  const { data: taskPool } = useTaskPoolById({ courseId, examId, taskPoolId });
+
+  const destitaionTaskPools =
+    closedTaskPools?.filter((t) => t.id !== taskPool?.id) ?? [];
 
   const { mutate: deleteTask, isLoading: isDeleteClosedTaskLoading } =
     useDeleteTask({
@@ -32,6 +44,17 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
       examId,
       taskPoolId,
     });
+
+  const { moveClosedTask, isLoading: isMoveClosedTaskLoading } =
+    useMoveClosedTask({
+      courseId,
+      examId,
+      sourcePoolId: taskPoolId,
+    });
+
+  if (!closedTaskPools || !taskPool) {
+    return <Text>Błąd podczas ładowanie strony</Text>;
+  }
 
   return (
     <Box
@@ -48,6 +71,14 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
             {task.title}
           </Text>
           <Stack direction="row">
+            <MoveTaskModal
+              isLoading={false}
+              destitaionTaskPools={destitaionTaskPools}
+              moveClosedTask={({ destinationTaskPoolId }) =>
+                moveClosedTask({ task, destinationTaskPoolId })
+              }
+              sourceTaskPool={taskPool}
+            />
             <EditClosedTaskModal
               isLoading={isEditClosedTaskLoading}
               closedTask={task}
