@@ -48,9 +48,9 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
     const ids = tasks.map((task) => task.id);
 
     if (isChecked) {
-      dispatch(selectManyOpenTasks({ ids }));
+      dispatch(selectManyOpenTasks({ taskIds: ids, taskPoolId }));
     } else {
-      dispatch(unSelectManyOpenTasks({ ids }));
+      dispatch(unSelectManyOpenTasks({ taskIds: ids, taskPoolId }));
     }
   };
 

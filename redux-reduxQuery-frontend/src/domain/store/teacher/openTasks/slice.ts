@@ -5,40 +5,66 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface TasksPoolsState {
   tasks: OpenTask[];
-  selectedTasksIds: string[];
+  selectedTasksIds: Record<string, string[]>;
 }
 
 const initialState: TasksPoolsState = {
   tasks: [],
-  selectedTasksIds: [],
+  selectedTasksIds: {},
 };
 
 export const openTasksSlice = createSlice({
   name: "openTasks",
   initialState,
   reducers: {
-    selectOpenTask: (state, action: PayloadAction<{ id: string }>) => {
-      state.selectedTasksIds = [...state.selectedTasksIds, action.payload.id];
-    },
-    selectManyOpenTasks: (state, action: PayloadAction<{ ids: string[] }>) => {
-      state.selectedTasksIds = [
+    selectOpenTask: (
+      state,
+      action: PayloadAction<{ taskId: string; taskPoolId: string }>
+    ) => {
+      state.selectedTasksIds = {
         ...state.selectedTasksIds,
-        ...action.payload.ids,
-      ];
+        [action.payload.taskPoolId]: [
+          ...(state.selectedTasksIds[action.payload.taskPoolId] ?? []),
+          action.payload.taskId,
+        ],
+      };
+    },
+    selectManyOpenTasks: (
+      state,
+      action: PayloadAction<{ taskIds: string[]; taskPoolId: string }>
+    ) => {
+      state.selectedTasksIds = {
+        ...state.selectedTasksIds,
+        [action.payload.taskPoolId]: [
+          ...(state.selectedTasksIds[action.payload.taskPoolId] ?? []),
+          ...action.payload.taskIds,
+        ],
+      };
     },
     unSelectManyOpenTasks: (
       state,
-      action: PayloadAction<{ ids: string[] }>
+      action: PayloadAction<{ taskIds: string[]; taskPoolId: string }>
     ) => {
-      state.selectedTasksIds = state.selectedTasksIds.filter(
-        (selectedTaskId) =>
-          !action.payload.ids.some((id) => selectedTaskId === id)
-      );
+      state.selectedTasksIds = {
+        ...state.selectedTasksIds,
+        [action.payload.taskPoolId]: state.selectedTasksIds[
+          action.payload.taskPoolId
+        ].filter(
+          (selectedTaskId) =>
+            !action.payload.taskIds.some((id) => selectedTaskId === id)
+        ),
+      };
     },
-    unselectOpenTask: (state, action: PayloadAction<{ id: string }>) => {
-      state.selectedTasksIds = state.selectedTasksIds.filter(
-        (taskId) => taskId !== action.payload.id
-      );
+    unselectOpenTask: (
+      state,
+      action: PayloadAction<{ taskId: string; taskPoolId: string }>
+    ) => {
+      state.selectedTasksIds = {
+        ...state.selectedTasksIds,
+        [action.payload.taskPoolId]: state.selectedTasksIds[
+          action.payload.taskPoolId
+        ].filter((selectedTaskId) => selectedTaskId !== action.payload.taskId),
+      };
     },
   },
   extraReducers: (builder) => {

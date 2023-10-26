@@ -12,10 +12,10 @@ import AddTaskModal from "./AddOpenTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
-import { OpenTask } from "@/domain/student/papers/model/Task";
 import { useRunInTask } from "@/utils/useRunInTask";
 import { useAppDispatch, useAppSelector } from "@/domain/store";
 import {
+  OpenTask,
   deleteOpenTaskThunk,
   moveOpenTaskThunk,
   selectIsOpenTaskSelectedChecker,
@@ -60,12 +60,12 @@ export default function OpenTaskTile({ task }: Props) {
     useRunInTask();
 
   const onCheckTask = (isChecked: boolean) => {
-    const id = task.id;
+    const taskId = task.id;
 
     if (isChecked) {
-      dispatch(selectOpenTask({ id }));
+      dispatch(selectOpenTask({ taskId, taskPoolId }));
     } else {
-      dispatch(unselectOpenTask({ id }));
+      dispatch(unselectOpenTask({ taskId, taskPoolId }));
     }
   };
 

@@ -4,7 +4,6 @@ import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditClosedTaskModal from "./EditClosedTaskModal";
-import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useEditClosedTask } from "../endpoints/useEditClosedTask";
 import MoveTaskModal from "../../components/MoveTaskModal";
@@ -13,6 +12,7 @@ import {
   useClosedTaskPools,
   useTaskPoolById,
 } from "@/domain/teacher/taskPools/endpoints/useTaskPools";
+import { ClosedTask } from "../model/closedTasks";
 
 type Props = {
   task: ClosedTask;

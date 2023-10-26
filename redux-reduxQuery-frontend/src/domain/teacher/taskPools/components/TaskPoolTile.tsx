@@ -4,13 +4,14 @@ import { routes } from "@/utils/routes";
 import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
-import { useAppDispatch } from "@/domain/store";
+import { useAppDispatch, useAppSelector } from "@/domain/store";
 import {
   updateOpenTaskThunk,
   deleteTasksPoolThunk,
   TaskPool,
   unSelectTaskPool,
   selectTaskPool,
+  selectSelectedTasksByPoolIdCountSelector,
 } from "@/domain/store/teacher";
 import { useRunInTask } from "@/utils/index";
 
@@ -26,6 +27,10 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
 
   const dispatch = useAppDispatch();
   const toast = useToast();
+
+  const selectedOpenTasksByPoolIdCount = useAppSelector(
+    selectSelectedTasksByPoolIdCountSelector
+  )(taskPool.id);
 
   const { runInTask: runUpdateTasksPoolTask } = useRunInTask({
     onError: () =>
@@ -77,9 +82,16 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
     >
       <Stack>
         <Flex justifyContent="space-between" alignItems="center">
-          <Text fontSize="medium" fontWeight="bold">
-            {taskPool.title}
-          </Text>
+          <Stack direction="row" alignItems="baseline">
+            <Text fontSize="medium" fontWeight="bold">
+              {taskPool.title}
+            </Text>
+            {selectedOpenTasksByPoolIdCount && (
+              <Text fontSize="small" color="gray.600">
+                Wybrane zadania: {selectedOpenTasksByPoolIdCount}
+              </Text>
+            )}
+          </Stack>
           <Stack direction="row">
             <EditTaskPoolModal
               taskPool={taskPool}

@@ -2,7 +2,7 @@ import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
-import { OpenTask } from "@/domain/student/papers/model/Task";
+import { StudentOpenTask } from "@/domain/student/papers/model/Task";
 
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useEditOpenTask } from "../endpoints/useEditOpenTask";
@@ -14,7 +14,7 @@ import {
 import { useMoveOpenTask } from "../endpoints/useMoveOpenTask";
 
 type Props = {
-  task: OpenTask;
+  task: StudentOpenTask;
   taskPoolId: string;
 };
 

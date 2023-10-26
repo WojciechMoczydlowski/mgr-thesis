@@ -1,4 +1,4 @@
-import { OpenTask } from "@/domain/student/papers/model/Task";
+import { StudentOpenTask } from "@/domain/student/papers/model/Task";
 import { useCurrentToken } from "@/services/auth/hooks/useCurrentToken";
 import { useTeacherClient } from "@/services/backend/useTeacherClient";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ export function useOpenTasks({ courseId, examId, taskPoolId }: RequestParams) {
     queryKey: ["openTasks", courseId, examId, taskPoolId],
     queryFn: () =>
       teacherClient
-        .get<OpenTask[]>(`/courses/${courseId}/${examId}/${taskPoolId}`)
+        .get<StudentOpenTask[]>(`/courses/${courseId}/${examId}/${taskPoolId}`)
         .then((res) => res.data),
     enabled:
       Boolean(token) &&

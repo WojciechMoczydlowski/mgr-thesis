@@ -1,4 +1,3 @@
-import { ClosedTask } from "@/domain/student/papers/model/Task";
 import { EditIcon } from "@chakra-ui/icons";
 import {
   Modal,
@@ -17,6 +16,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { ClosedTask } from "../model/closedTasks";
 
 type Props = {
   closedTask: ClosedTask;

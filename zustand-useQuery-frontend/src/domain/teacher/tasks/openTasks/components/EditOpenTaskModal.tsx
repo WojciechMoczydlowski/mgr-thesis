@@ -1,4 +1,4 @@
-import { OpenTask } from "@/domain/student/papers/model/Task";
+import { StudentOpenTask } from "@/domain/student/papers/model/Task";
 import {
   Modal,
   ModalOverlay,
@@ -18,7 +18,7 @@ import { useState, useEffect } from "react";
 import { EditIcon } from "@chakra-ui/icons";
 
 type Props = {
-  openTask: OpenTask;
+  openTask: StudentOpenTask;
   isLoading: boolean;
   editOpenTask: ({
     id,
