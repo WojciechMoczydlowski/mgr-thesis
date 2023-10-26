@@ -15,16 +15,19 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskDto {
     private Long id;
+    private Long taskPoolId;
     private String title;
     private String content;
     private BigDecimal penaltyWeight;
     private List<AnswerEntity> answers;
     private String fileFormat;
     private Integer maxFileSize;
-    public static TaskDto from(AbstractTaskEntity entity) {
+
+    public static TaskDto from(AbstractTaskEntity entity, Long taskPoolId) {
         if (entity instanceof OpenTaskEntity) {
             return TaskDto.builder()
                     .id(entity.getId())
+                    .taskPoolId(taskPoolId)
                     .title(entity.getTitle())
                     .content(entity.getContent())
                     .penaltyWeight(null)
@@ -35,6 +38,7 @@ public class TaskDto {
         } else if (entity instanceof ClosedTaskEntity) {
             return TaskDto.builder()
                     .id(entity.getId())
+                    .taskPoolId(taskPoolId)
                     .title(entity.getTitle())
                     .content(entity.getContent())
                     .penaltyWeight(((ClosedTaskEntity) entity).getPenaltyWeight())
@@ -45,6 +49,7 @@ public class TaskDto {
         } else {
             return TaskDto.builder()
                     .id(entity.getId())
+                    .taskPoolId(taskPoolId)
                     .title(entity.getTitle())
                     .content(entity.getContent())
                     .penaltyWeight(null)
