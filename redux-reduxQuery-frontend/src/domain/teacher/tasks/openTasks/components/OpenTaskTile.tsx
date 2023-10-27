@@ -1,15 +1,5 @@
-import {
-  Flex,
-  Box,
-  Text,
-  Stack,
-  Spacer,
-  IconButton,
-  Checkbox,
-} from "@chakra-ui/react";
+import { Flex, Box, Text, Stack, IconButton, Checkbox } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import AddTaskModal from "./AddOpenTaskModal";
-import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
 import { useRunInTask } from "@/utils/useRunInTask";

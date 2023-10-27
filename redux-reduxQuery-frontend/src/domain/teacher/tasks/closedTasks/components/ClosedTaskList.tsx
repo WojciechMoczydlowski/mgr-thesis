@@ -1,13 +1,26 @@
-import { Flex, Text, Spacer, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  Spacer,
+  IconButton,
+  Stack,
+  Checkbox,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { ClosedTask } from "@/domain/student/papers/model/Task";
 import ClosedTaskTile from "./ClosedTaskTile";
 import {
   useGetClosedTasksQuery,
   usePostClosedTaskMutation,
 } from "@/domain/store/teacher";
+import { ClosedTask } from "@/domain/store/teacher/closedTasks";
+import { useAppDispatch, useAppSelector } from "@/domain/store";
+import { selectIsClosedTaskListSelected } from "@/domain/store/teacher/closedTasks/selectors";
+import {
+  selectManyClosedTasks,
+  unSelectManyClosedTasks,
+} from "@/domain/store/teacher/closedTasks/slice";
 
 type Props = {
   taskPoolId: string;
@@ -19,6 +32,12 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
   const courseId = query.courseId as string;
   const examId = query.examId as string;
 
+  const dispatch = useAppDispatch();
+
+  const isListSelected = useAppSelector(selectIsClosedTaskListSelected)(
+    taskPoolId
+  );
+
   const { data: tasks, isLoading } = useGetClosedTasksQuery({
     courseId,
     examId,
@@ -27,6 +46,16 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
 
   const [postClosedTask, { isLoading: isPostClosedTaskLoading }] =
     usePostClosedTaskMutation();
+
+  const onCheckList = (isChecked: boolean) => {
+    const ids = (tasks ?? []).map((task) => task.id);
+
+    if (isChecked) {
+      dispatch(selectManyClosedTasks({ taskIds: ids, taskPoolId }));
+    } else {
+      dispatch(unSelectManyClosedTasks({ taskIds: ids, taskPoolId }));
+    }
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -46,12 +75,19 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
             <Text textColor="cyan.600">{taskPoolTitle}</Text>
           </Text>
           <Spacer />
-          <AddClosedTaskModal
-            isLoading={isPostClosedTaskLoading}
-            addClosedTask={(payload) =>
-              postClosedTask({ courseId, examId, taskPoolId, payload })
-            }
-          />
+          <Stack direction="row">
+            <AddClosedTaskModal
+              isLoading={isPostClosedTaskLoading}
+              addClosedTask={(payload) =>
+                postClosedTask({ courseId, examId, taskPoolId, payload })
+              }
+            />
+            <Checkbox
+              size="lg"
+              onChange={(e) => onCheckList(e.target.checked)}
+              isChecked={isListSelected}
+            />
+          </Stack>
         </Flex>
 
         {tasks && tasks?.length > 0 ? <List tasks={tasks} /> : <EmptyList />}

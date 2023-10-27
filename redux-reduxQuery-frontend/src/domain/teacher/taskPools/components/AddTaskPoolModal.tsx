@@ -14,7 +14,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { TaskPoolTypes } from "../const";
+import { TaskType } from "@/domain/store/teacher/tasks";
 
 type Props = {
   addTaskPool: ({
@@ -25,7 +25,7 @@ type Props = {
     taskDrawNumber,
   }: {
     title: string;
-    taskType: string;
+    taskType: TaskType;
     description: string;
     pointsPerTask: number;
     taskDrawNumber: number;
@@ -36,7 +36,7 @@ export default function AddTaskPoolModal({ addTaskPool }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [title, setTitle] = useState("");
-  const [taskType, setTaskType] = useState("");
+  const [taskType, setTaskType] = useState<TaskType | undefined>();
   const [description, setDescription] = useState("");
   const [pointsPerTask, setPointsPerTask] = useState<number>();
   const [taskDrawNumber, setTaskDrawNumber] = useState<number>();
@@ -91,10 +91,12 @@ export default function AddTaskPoolModal({ addTaskPool }: Props) {
               {taskPoolError && <Text color="tomato">{taskPoolError}</Text>}
               <Select
                 placeholder="Wybierz typ zadań w puli"
-                onChange={(event) => setTaskType(event.currentTarget.value)}
+                onChange={(event) =>
+                  setTaskType(event.currentTarget.value as TaskType)
+                }
               >
-                <option value={TaskPoolTypes.open}>Zadania otwarte</option>
-                <option value={TaskPoolTypes.closed}>Zadania zamknięte</option>
+                <option value={TaskType.OPEN}>Zadania otwarte</option>
+                <option value={TaskType.CLOSED}>Zadania zamknięte</option>
               </Select>
               <Input
                 placeholder="Opis puli"

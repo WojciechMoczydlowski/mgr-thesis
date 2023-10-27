@@ -1,23 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { OpenTask } from "./model";
-import { fetchOpenTasksThunk } from "./thunks";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-export interface OpenTasksState {
-  tasks: OpenTask[];
+export interface ClosedTasksState {
   selectedTasksIds: Record<string, string[]>;
 }
 
-const initialState: OpenTasksState = {
-  tasks: [],
+const initialState: ClosedTasksState = {
   selectedTasksIds: {},
 };
 
-export const openTasksSlice = createSlice({
-  name: "openTasks",
+export const closedTasksSlice = createSlice({
+  name: "closedTasks",
   initialState,
   reducers: {
-    selectOpenTask: (
+    selectClosedTask: (
       state,
       action: PayloadAction<{ taskId: string; taskPoolId: string }>
     ) => {
@@ -29,7 +25,7 @@ export const openTasksSlice = createSlice({
         ],
       };
     },
-    selectManyOpenTasks: (
+    selectManyClosedTasks: (
       state,
       action: PayloadAction<{ taskIds: string[]; taskPoolId: string }>
     ) => {
@@ -41,7 +37,7 @@ export const openTasksSlice = createSlice({
         ],
       };
     },
-    unSelectManyOpenTasks: (
+    unSelectManyClosedTasks: (
       state,
       action: PayloadAction<{ taskIds: string[]; taskPoolId: string }>
     ) => {
@@ -55,7 +51,7 @@ export const openTasksSlice = createSlice({
         ),
       };
     },
-    unselectOpenTask: (
+    unselectClosedTask: (
       state,
       action: PayloadAction<{ taskId: string; taskPoolId: string }>
     ) => {
@@ -67,18 +63,13 @@ export const openTasksSlice = createSlice({
       };
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchOpenTasksThunk.fulfilled, (state, { payload }) => {
-      state.tasks = payload;
-    });
-  },
 });
 
 export const {
-  selectOpenTask,
-  unselectOpenTask,
-  selectManyOpenTasks,
-  unSelectManyOpenTasks,
-} = openTasksSlice.actions;
+  selectClosedTask,
+  unselectClosedTask,
+  selectManyClosedTasks,
+  unSelectManyClosedTasks,
+} = closedTasksSlice.actions;
 
-export default openTasksSlice.reducer;
+export default closedTasksSlice.reducer;

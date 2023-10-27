@@ -29,6 +29,7 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
       unSelectTaskPool();
     } else {
       selectTaskPool({ id: taskPool.id });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 

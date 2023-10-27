@@ -15,9 +15,9 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { TaskPoolTypes } from "../const";
 import { EditIcon } from "@chakra-ui/icons";
 import { TaskPool } from "@/domain/store/teacher";
+import { TaskType } from "@/domain/store/teacher/tasks";
 
 type Props = {
   taskPool: TaskPool;
@@ -40,7 +40,7 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [title, setTitle] = useState("");
-  const [taskType, setTaskType] = useState(TaskPoolTypes.closed);
+  const [taskType, setTaskType] = useState(TaskType.CLOSED);
   const [description, setDescription] = useState("");
   const [pointsPerTask, setPointsPerTask] = useState<number>();
   const [taskDrawNumber, setTaskDrawNumber] = useState<number>();
@@ -106,10 +106,12 @@ export default function EditTaskPoolModal({ taskPool, editTaskPool }: Props) {
               <Select
                 isDisabled
                 value={taskType}
-                onChange={(event) => setTaskType(event.currentTarget.value)}
+                onChange={(event) =>
+                  setTaskType(event.currentTarget.value as TaskType)
+                }
               >
-                <option value={TaskPoolTypes.open}>Zadania otwarte</option>
-                <option value={TaskPoolTypes.closed}>Zadania zamknięte</option>
+                <option value={TaskType.OPEN}>Zadania otwarte</option>
+                <option value={TaskType.CLOSED}>Zadania zamknięte</option>
               </Select>
               <Input
                 placeholder="Opis puli"

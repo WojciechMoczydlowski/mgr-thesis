@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { authReducer } from "./auth";
 import { teacherApi, tasksPoolsReducer, openTasksReducer } from "./teacher";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { closedTasksReducer } from "./teacher/closedTasks";
 
 export const store = configureStore({
   reducer: {
@@ -9,6 +10,7 @@ export const store = configureStore({
     [teacherApi.reducerPath]: teacherApi.reducer,
     tasksPools: tasksPoolsReducer,
     openTasks: openTasksReducer,
+    closedTasks: closedTasksReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(teacherApi.middleware),

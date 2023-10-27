@@ -37,7 +37,7 @@ export const selectOpenTasksByTaskPoolIdSelector = createSelector(
     openTasks.filter((openTask) => openTask.taskPoolId === taskPoolId)
 );
 
-export const selectSelectedTasksByPoolIdCountSelector = createSelector(
+export const selectSelectedOpenTasksCountSelector = createSelector(
   selectSelectedOpenTasksIdsDictionary,
   (selectedOpenTasksIdsDictionary) => (taskPooldId: string) =>
     (selectedOpenTasksIdsDictionary[taskPooldId] ?? []).length
