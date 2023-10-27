@@ -12,6 +12,7 @@ import { ExamHeader } from "./components";
 import { TasksList } from "../tasks/components";
 import { useTaskPools } from "../taskPools/endpoints/useTaskPools";
 import { useTaskPoolStore } from "../taskPools/store/taskPoolStore";
+import { ExamHeaderActions } from "./components/ExamHeaderActions";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -57,13 +58,16 @@ export function TeacherExamPage() {
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId })}>
       <Container maxW="8xl">
-        <ExamHeader
-          courseName="mocked course name"
-          examDescription="mocked exam description"
-          examTitle="mocked exam title"
-          generateExam={() => {}}
-          isEditingDisabled
-        />
+        <Flex>
+          <ExamHeader
+            courseName="mocked course name"
+            examDescription="mocked exam description"
+            examTitle="mocked exam title"
+            generateExam={() => {}}
+            isEditingDisabled
+          />
+          <ExamHeaderActions />
+        </Flex>
 
         <Flex flexGrow="1">
           <TaskPoolList

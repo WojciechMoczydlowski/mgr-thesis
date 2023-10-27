@@ -10,6 +10,7 @@ import { ExamDetails } from "@/domain/student/exams/model/ExamDetails";
 import { ExamHeader } from "./components";
 import { TasksList } from "../tasks/components/TasksList";
 import { formatDate } from "@/utils/formatDate";
+import { ExamHeaderActions } from "./components/ExamHeaderActions";
 
 export function TeacherExamPage() {
   const { query, push } = useRouter();
@@ -24,14 +25,16 @@ export function TeacherExamPage() {
   return (
     <Layout breadcrumbs={makeBreadcrumbs({ courseId })}>
       <Container maxW="8xl">
-        <ExamHeader
-          courseName="mocked course name"
-          examDescription="mocked exam description"
-          examTitle="mocked exam title"
-          generateExam={() => {}}
-          isEditingDisabled
-        />
-
+        <Flex>
+          <ExamHeader
+            courseName="mocked course name"
+            examDescription="mocked exam description"
+            examTitle="mocked exam title"
+            generateExam={() => {}}
+            isEditingDisabled
+          />
+          <ExamHeaderActions />
+        </Flex>
         <Flex flexGrow="1">
           <TaskPoolList />
           <TasksList />
