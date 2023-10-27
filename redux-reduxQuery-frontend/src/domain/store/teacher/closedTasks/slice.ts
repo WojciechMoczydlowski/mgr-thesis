@@ -62,6 +62,9 @@ export const closedTasksSlice = createSlice({
         ].filter((selectedTaskId) => selectedTaskId !== action.payload.taskId),
       };
     },
+    unselectAllClosedTasks: (state) => {
+      state.selectedTasksIds = {};
+    },
   },
 });
 
@@ -70,6 +73,7 @@ export const {
   unselectClosedTask,
   selectManyClosedTasks,
   unSelectManyClosedTasks,
+  unselectAllClosedTasks,
 } = closedTasksSlice.actions;
 
 export default closedTasksSlice.reducer;

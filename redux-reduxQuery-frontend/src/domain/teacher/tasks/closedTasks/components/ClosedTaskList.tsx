@@ -57,6 +57,8 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
     }
   };
 
+  const isListNotEmpty = tasks && tasks.length > 0;
+
   if (isLoading) {
     return <Loader />;
   }
@@ -82,15 +84,17 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
                 postClosedTask({ courseId, examId, taskPoolId, payload })
               }
             />
-            <Checkbox
-              size="lg"
-              onChange={(e) => onCheckList(e.target.checked)}
-              isChecked={isListSelected}
-            />
+            {isListNotEmpty && (
+              <Checkbox
+                size="lg"
+                onChange={(e) => onCheckList(e.target.checked)}
+                isChecked={isListSelected}
+              />
+            )}
           </Stack>
         </Flex>
 
-        {tasks && tasks?.length > 0 ? <List tasks={tasks} /> : <EmptyList />}
+        {isListNotEmpty ? <List tasks={tasks} /> : <EmptyList />}
       </Flex>
     </Flex>
   );

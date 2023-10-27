@@ -80,6 +80,8 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
     },
   });
 
+  const isListEmpty = tasks?.length === 0;
+
   if (isOpenTasksLoading) {
     return <Loader />;
   }
@@ -113,14 +115,16 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
                 )
               }
             />
-            <Checkbox
-              size="lg"
-              onChange={(e) => onCheckList(e.target.checked)}
-              isChecked={isListSelected}
-            />
+            {!isListEmpty && (
+              <Checkbox
+                size="lg"
+                onChange={(e) => onCheckList(e.target.checked)}
+                isChecked={isListSelected}
+              />
+            )}
           </Stack>
         </Flex>
-        {tasks?.length === 0 ? (
+        {isListEmpty ? (
           <EmptyList />
         ) : (
           <List tasks={tasks} taskPoolId={taskPoolId} />

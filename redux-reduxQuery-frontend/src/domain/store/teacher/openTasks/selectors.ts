@@ -42,3 +42,8 @@ export const selectSelectedOpenTasksCountSelector = createSelector(
   (selectedOpenTasksIdsDictionary) => (taskPooldId: string) =>
     (selectedOpenTasksIdsDictionary[taskPooldId] ?? []).length
 );
+
+export const selectSelectedOpenTasksCount = createSelector(
+  selectAllSelectedOpenTasksIds,
+  (tasks) => tasks.length
+);

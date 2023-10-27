@@ -31,3 +31,8 @@ export const selectSelectedClosedTasksCountSelector = createSelector(
   (selectedClosedTasksIdsDictionary) => (taskPooldId: string) =>
     (selectedClosedTasksIdsDictionary[taskPooldId] ?? []).length
 );
+
+export const selectSelectedClosedTasksCount = createSelector(
+  selectAllSelectedClosedTasksIds,
+  (tasks) => tasks.length
+);

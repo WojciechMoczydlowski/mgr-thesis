@@ -66,6 +66,9 @@ export const openTasksSlice = createSlice({
         ].filter((selectedTaskId) => selectedTaskId !== action.payload.taskId),
       };
     },
+    unselectAllOpenTasks: (state) => {
+      state.selectedTasksIds = {};
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchOpenTasksThunk.fulfilled, (state, { payload }) => {
@@ -79,6 +82,7 @@ export const {
   unselectOpenTask,
   selectManyOpenTasks,
   unSelectManyOpenTasks,
+  unselectAllOpenTasks,
 } = openTasksSlice.actions;
 
 export default openTasksSlice.reducer;

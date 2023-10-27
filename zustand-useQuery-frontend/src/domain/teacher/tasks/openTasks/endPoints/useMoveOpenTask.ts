@@ -45,8 +45,6 @@ export const useMoveOpenTask = ({
       deleteOpenTask({ taskId: task.id }),
     ]);
 
-    console.log(destinationTaskPoolId);
-
     selectTaskPool({ id: destinationTaskPoolId });
   };
 

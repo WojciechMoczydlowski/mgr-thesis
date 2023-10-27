@@ -6,6 +6,7 @@ import {
   usePostClosedTaskMutation,
 } from "@/domain/store/teacher";
 import { ClosedTask } from "@/domain/store/teacher/closedTasks";
+import { unselectAllClosedTasks } from "@/domain/store/teacher/closedTasks/slice";
 
 export const useMoveClosedTask = ({
   courseId,
@@ -51,6 +52,7 @@ export const useMoveClosedTask = ({
           id: Number(destinationTaskPoolId) as unknown as string,
         })
       );
+      dispatch(unselectAllClosedTasks());
     } catch {}
   };
 
