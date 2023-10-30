@@ -6,6 +6,7 @@ interface ClosedTasksStore {
   selectManyTasks: (params: { taskIds: string[]; taskPoolId: string }) => void;
   unselectTask: (params: { taskId: string; taskPoolId: string }) => void;
   unselectManyTasks: (params: { taskPoolId: string }) => void;
+  unselectedAllTasks: () => void;
 }
 
 export const useClosedTasksStore = create<ClosedTasksStore>()((set, get) => ({
@@ -53,10 +54,26 @@ export const useClosedTasksStore = create<ClosedTasksStore>()((set, get) => ({
         })
     );
   },
+  unselectedAllTasks: () => {
+    set({ selectedTasksDictionary: {} });
+  },
 }));
 
-const useSelectedTasks = ({ taskPoolId }: { taskPoolId: string }) =>
+const useSelectedTasks = (taskPoolId: string) =>
   useClosedTasksStore().selectedTasksDictionary[taskPoolId] ?? [];
+
+export const useSelectedClosedTasksCounter = () => {
+  const openTasksStore = useClosedTasksStore();
+
+  return (taskPoolId: string) =>
+    openTasksStore.selectedTasksDictionary[taskPoolId]?.length;
+};
+
+export const useAllSelectedClosedTasksCount = () =>
+  Object.values(useClosedTasksStore().selectedTasksDictionary).reduce(
+    (curr, prev) => curr + prev.length,
+    0
+  );
 
 export const useIsClosedTaskSelected = ({
   taskId,
@@ -64,10 +81,10 @@ export const useIsClosedTaskSelected = ({
 }: {
   taskId: string;
   taskPoolId: string;
-}) => useSelectedTasks({ taskPoolId })?.some((id) => id === taskId);
+}) => useSelectedTasks(taskPoolId)?.some((id) => id === taskId);
 
 export const useIsClosedTasksListSelected = ({
   taskPoolId,
 }: {
   taskPoolId: string;
-}) => useSelectedTasks({ taskPoolId })?.length > 0;
+}) => useSelectedTasks(taskPoolId)?.length > 0;
