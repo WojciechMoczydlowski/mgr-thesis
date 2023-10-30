@@ -1,4 +1,12 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Text,
+  Stack,
+  Spacer,
+  IconButton,
+  Checkbox,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
@@ -8,6 +16,11 @@ import { useAddOpenTask } from "../endpoints/useAddOpenTask";
 import { useEditOpenTask } from "../endpoints/useEditOpenTask";
 import OpenTaskTile from "./OpenTaskTile";
 import AddOpenTaskModal from "./AddOpenTaskModal";
+import {
+  useIsOpenTaskSelected,
+  useIsOpenTasksListSelected,
+  useOpenTasksStore,
+} from "../store/openTasksStore";
 
 type Props = { taskPoolId: string; taskPoolTitle: string };
 
@@ -32,6 +45,25 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
     taskPoolId,
   });
 
+  const openTasksStore = useOpenTasksStore();
+  const isListSelected = useIsOpenTasksListSelected({ taskPoolId });
+
+  const onCheckList = (checked: boolean) => {
+    const taskIds = tasks?.map((task) => task.id);
+
+    if (!taskIds) {
+      return;
+    }
+
+    if (checked) {
+      openTasksStore.selectManyTasks({ taskIds, taskPoolId });
+    } else {
+      openTasksStore.unselectManyTasks({ taskPoolId });
+    }
+  };
+
+  const isListNotEmpty = tasks?.length && tasks?.length > 0;
+
   if (isTasksLoading) {
     return <Loader />;
   }
@@ -54,9 +86,18 @@ export default function OpenTaskList({ taskPoolId, taskPoolTitle }: Props) {
             <Text textColor="cyan.600">{taskPoolTitle}</Text>
           </Text>
           <Spacer />
-          <AddOpenTaskModal addOpenTask={(params) => addOpenTask(params)} />
+          <Stack direction="row">
+            <AddOpenTaskModal addOpenTask={(params) => addOpenTask(params)} />
+            {isListNotEmpty && (
+              <Checkbox
+                size="lg"
+                onChange={(e) => onCheckList(e.target.checked)}
+                isChecked={isListSelected}
+              />
+            )}
+          </Stack>
         </Flex>
-        {tasks?.length && tasks?.length > 0 ? (
+        {isListNotEmpty ? (
           <List tasks={tasks} taskPoolId={taskPoolId} />
         ) : (
           <EmptyList />

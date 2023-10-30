@@ -1,14 +1,15 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import { Flex, Text, Stack, Spacer, Checkbox } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import EditClosedTaskModal from "./EditClosedTaskModal";
-import { useEditClosedTask } from "../endpoints/useEditClosedTask";
 import { useAddClosedTask } from "../endpoints/useAddClosedTask";
 import { useClosedTasks } from "../endpoints/useClosedTasks";
 import { ClosedTask } from "../model/closedTasks";
 import ClosedTaskTile from "./ClosedTaskTile";
+import {
+  useClosedTasksStore,
+  useIsClosedTasksListSelected,
+} from "../store/closedTasksStore";
 
 type Props = {
   taskPoolId: string;
@@ -33,6 +34,25 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
       taskPoolId,
     });
 
+  const isListNotEmpty = tasks?.length && tasks?.length > 0;
+
+  const closedTasksStore = useClosedTasksStore();
+  const isListSelected = useIsClosedTasksListSelected({ taskPoolId });
+
+  const onCheckList = (checked: boolean) => {
+    const taskIds = tasks?.map((task) => task.id);
+
+    if (!taskIds) {
+      return;
+    }
+
+    if (checked) {
+      closedTasksStore.selectManyTasks({ taskIds, taskPoolId });
+    } else {
+      closedTasksStore.unselectManyTasks({ taskPoolId });
+    }
+  };
+
   if (isTasksLoading) {
     return <Loader />;
   }
@@ -51,10 +71,19 @@ export default function ClosedTaskList({ taskPoolId, taskPoolTitle }: Props) {
             <Text textColor="cyan.600">{taskPoolTitle}</Text>
           </Text>
           <Spacer />
-          <AddClosedTaskModal
-            isLoading={isPostClosedTaskLoading}
-            addClosedTask={(payload) => addClosedTask(payload)}
-          />
+          <Stack direction="row">
+            <AddClosedTaskModal
+              isLoading={isPostClosedTaskLoading}
+              addClosedTask={(payload) => addClosedTask(payload)}
+            />
+            {isListNotEmpty && (
+              <Checkbox
+                size="lg"
+                onChange={(e) => onCheckList(e.target.checked)}
+                isChecked={isListSelected}
+              />
+            )}
+          </Stack>
         </Flex>
 
         {tasks && tasks?.length > 0 ? (

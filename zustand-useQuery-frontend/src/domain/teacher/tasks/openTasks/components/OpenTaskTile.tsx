@@ -73,7 +73,7 @@ export default function OpenTaskTile({ task, taskPoolId }: Props) {
     if (checked) {
       openTaskStore.selectTask({ taskId: task.id, taskPoolId });
     } else {
-      openTaskStore.unSelectTask({ taskId: task.id, taskPoolId });
+      openTaskStore.unselectTask({ taskId: task.id, taskPoolId });
     }
   };
 

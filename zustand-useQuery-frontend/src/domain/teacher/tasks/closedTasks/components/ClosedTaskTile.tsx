@@ -75,7 +75,7 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
     if (checked) {
       closedTasksStore.selectTask({ taskId, taskPoolId });
     } else {
-      closedTasksStore.unSelectTask({ taskId, taskPoolId });
+      closedTasksStore.unselectTask({ taskId, taskPoolId });
     }
   };
 
