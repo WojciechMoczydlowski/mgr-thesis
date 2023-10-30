@@ -53,8 +53,6 @@ export default function EditClosedTaskModal({
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log(closedTask);
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [penaltyWeight, setPenaltyWeight] = useState<number>();

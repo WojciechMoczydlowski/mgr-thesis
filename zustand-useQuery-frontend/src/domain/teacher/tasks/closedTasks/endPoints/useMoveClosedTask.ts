@@ -45,8 +45,6 @@ export const useMoveClosedTask = ({
       deleteClosedTask({ taskId: task.id }),
     ]);
 
-    console.log(destinationTaskPoolId);
-
     selectTaskPool({ id: destinationTaskPoolId });
   };
 

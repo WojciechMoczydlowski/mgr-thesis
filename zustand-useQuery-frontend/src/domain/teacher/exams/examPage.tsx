@@ -47,8 +47,6 @@ export function TeacherExamPage() {
     (taskPool) => taskPool.id === selectedTaskPoolId
   );
 
-  console.log({ selectedTaskPoolId, selectedTaskPool, taskPools });
-
   if (isExamDetailsLoading) {
     return <InfoSpinner details="Ładowanie pul zadań" />;
   }

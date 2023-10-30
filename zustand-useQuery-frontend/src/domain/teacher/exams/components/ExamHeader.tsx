@@ -17,7 +17,7 @@ export function ExamHeader({
   generateExam,
 }: Props) {
   return (
-    <Flex>
+    <Flex flexGrow="1" flexBasis="0">
       <Flex direction="column">
         <Text fontSize="lg" fontWeight="bold">
           Szczegóły egzaminu
