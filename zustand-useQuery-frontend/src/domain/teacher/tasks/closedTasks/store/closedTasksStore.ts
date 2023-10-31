@@ -69,11 +69,14 @@ export const useSelectedClosedTasksCounter = () => {
     openTasksStore.selectedTasksDictionary[taskPoolId]?.length;
 };
 
-export const useAllSelectedClosedTasksCount = () =>
+export const useAllSelectedClosedTasksIds = () =>
   Object.values(useClosedTasksStore().selectedTasksDictionary).reduce(
-    (curr, prev) => curr + prev.length,
-    0
+    (curr, prev) => [...curr, ...prev],
+    []
   );
+
+export const useAllSelectedClosedTasksCount = () =>
+  useAllSelectedClosedTasksIds().length;
 
 export const useIsClosedTaskSelected = ({
   taskId,

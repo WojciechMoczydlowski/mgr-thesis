@@ -64,7 +64,7 @@ export function TeacherExamPage() {
             generateExam={() => {}}
             isEditingDisabled
           />
-          <ExamHeaderActions />
+          <ExamHeaderActions courseId={courseId} examId={examId} />
         </Flex>
 
         <Flex flexGrow="1">

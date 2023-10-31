@@ -2,30 +2,49 @@ import { Flex, Text, Button, Stack } from "@chakra-ui/react";
 import RemoveManyTasksModal from "../../tasks/components/RemoveManyTasksModal";
 import MoveManyTasksModal from "../../tasks/components/MoveManyTasksModal";
 import {
-  useAllSelectedClosedTasksCount,
+  useAllSelectedClosedTasksIds,
   useClosedTasksStore,
 } from "../../tasks/closedTasks/store/closedTasksStore";
 import {
-  useAllSelectedOpenTasksCount,
+  useAllSelectedOpenTasksIds,
   useOpenTasksStore,
 } from "../../tasks/openTasks/store/openTasksStore";
+import { useFetchOpenTasks } from "../../tasks/openTasks/endpoints/useFetchOpenTask";
+import { useFetchClosedTasks } from "../../tasks/closedTasks/endpoints/useFetchClosedTasks";
+import { useTaskPoolStore } from "../../taskPools/store/taskPoolStore";
+import { useDeleteManyTasks } from "../../tasks/endpoints/useDeleteManyTasks";
 
-type Props = {};
+type Props = { courseId: string; examId: string };
 
-export function ExamHeaderActions({}: Props) {
-  const selectedOpenTasksCount = useAllSelectedOpenTasksCount();
-  const selectedClosedTasksCount = useAllSelectedClosedTasksCount();
+export function ExamHeaderActions({ courseId, examId }: Props) {
+  const selectedOpenTasksIds = useAllSelectedOpenTasksIds();
+  const selectedClosedTasksIds = useAllSelectedClosedTasksIds();
 
   const openTasksStore = useOpenTasksStore();
   const closedTasksStore = useClosedTasksStore();
+
+  const selectedTaskPool = useTaskPoolStore().selectedTaskPoolId!;
 
   const unselectAllTasks = () => {
     openTasksStore.unselectedAllTasks();
     closedTasksStore.unselectedAllTasks();
   };
 
+  const selectedOpenTasksCount = selectedOpenTasksIds.length;
+  const selectedClosedTasksCount = selectedClosedTasksIds.length;
+
   const shouldRender =
-    selectedOpenTasksCount > 0 || selectedClosedTasksCount > 0;
+    selectedTaskPool &&
+    (selectedOpenTasksCount > 0 || selectedClosedTasksCount > 0);
+
+  const fetchOpenTasks = useFetchOpenTasks();
+  const fetchClosedTasks = useFetchClosedTasks();
+  const { mutate: deleteManyTasks } = useDeleteManyTasks({
+    courseId,
+    examId,
+    taskPoolId: selectedTaskPool,
+    onSuccess: () => unselectAllTasks(),
+  });
 
   if (!shouldRender) {
     return null;
@@ -48,7 +67,29 @@ export function ExamHeaderActions({}: Props) {
           Odznacz wszystkie
         </Button>
         <MoveManyTasksModal />
-        <RemoveManyTasksModal />
+        <RemoveManyTasksModal
+          fetchClosedTasks={() =>
+            fetchClosedTasks({
+              taskIds: selectedClosedTasksIds,
+              courseId,
+              examId,
+              taskPoolId: selectedTaskPool,
+            })
+          }
+          fetchOpenTasks={() =>
+            fetchOpenTasks({
+              taskIds: selectedOpenTasksIds,
+              courseId,
+              examId,
+              taskPoolId: selectedTaskPool,
+            })
+          }
+          deleteTasks={() =>
+            deleteManyTasks({
+              taskIds: [...selectedClosedTasksIds, ...selectedOpenTasksIds],
+            })
+          }
+        />
       </Stack>
     </Flex>
   );

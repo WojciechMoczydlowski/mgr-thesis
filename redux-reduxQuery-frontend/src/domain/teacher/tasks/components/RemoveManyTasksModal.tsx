@@ -44,7 +44,7 @@ export default function RemoveManyTasksModal({}: Props) {
 
   return (
     <>
-      <Button mt="4" variant="outline" colorScheme="purple" onClick={() => {}}>
+      <Button mt="4" variant="outline" colorScheme="purple" onClick={onOpen}>
         Usuń wiele
       </Button>
 

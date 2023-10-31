@@ -44,7 +44,7 @@ export default function MoveManyTasksModal({}: Props) {
 
   return (
     <>
-      <Button mt="4" variant="outline" colorScheme="purple" onClick={() => {}}>
+      <Button mt="4" variant="outline" colorScheme="purple" onClick={onOpen}>
         Przenieś wiele
       </Button>
 
