@@ -1,9 +1,9 @@
 import { Flex, Box, Text, Stack, Card } from "@chakra-ui/react";
-import { ClosedTask } from "../model/Task";
+import { StudentClosedTask } from "../model/Task";
 import { ClosedTaskAnswerTile } from "./ClosedTaskAnswerTile";
 
 type Props = {
-  task: ClosedTask;
+  task: StudentClosedTask;
   onUpdate: ({
     answerId,
     taskId,

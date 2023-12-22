@@ -44,18 +44,18 @@ public class TaskService {
 
         return taskRepository.findAllByPool(taskPool)
                 .stream()
-                .map(TaskDto::from)
+                .map(t -> TaskDto.from(t, taskPoolId))
                 .collect(Collectors.toList());
     }
 
     // Read one task with specific ID
-    public TaskDto getTaskById(Long taskId) {
+    public TaskDto getTaskById(Long taskId, Long taskPoolId) {
         var user = authService.getCurrentUser();
         if (user.getRole() != Role.TEACHER) {
             throw new RuntimeExceptionWithHttpStatus("Current user cannot read tasks in a task pool",
                     HttpStatus.UNAUTHORIZED);
         }
-        return TaskDto.from(taskRepository.findById(taskId).get());
+        return TaskDto.from(taskRepository.findById(taskId).get(), taskPoolId);
     }
 
     // Create a task

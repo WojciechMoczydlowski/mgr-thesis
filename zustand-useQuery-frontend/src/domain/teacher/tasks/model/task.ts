@@ -5,6 +5,7 @@ export enum TaskType {
 
 export type TaskCommon = {
   id: string;
+  taskPooldId: string;
   title: string;
   content: string;
   maxPoints: number;

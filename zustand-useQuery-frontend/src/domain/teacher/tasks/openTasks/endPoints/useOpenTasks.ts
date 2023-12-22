@@ -1,7 +1,7 @@
-import { OpenTask } from "@/domain/student/papers/model/Task";
 import { useCurrentToken } from "@/services/auth/hooks/useCurrentToken";
 import { useTeacherClient } from "@/services/backend/useTeacherClient";
 import { useQuery } from "@tanstack/react-query";
+import { OpenTask } from "../model/openTask";
 
 type RequestParams = {
   courseId: string;

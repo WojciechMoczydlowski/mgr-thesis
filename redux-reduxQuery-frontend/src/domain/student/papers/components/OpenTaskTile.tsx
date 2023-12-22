@@ -1,10 +1,10 @@
 import { Text, Card, Textarea, Stack } from "@chakra-ui/react";
-import { OpenTask } from "../model/Task";
+import { StudentOpenTask } from "../model/Task";
 import { useMemo, useState } from "react";
 import { debounce } from "lodash";
 
 type Props = {
-  task: OpenTask;
+  task: StudentOpenTask;
   onUpdate: ({ taskId, answer }: { taskId: string; answer: string }) => void;
 };
 

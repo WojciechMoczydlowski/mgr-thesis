@@ -3,6 +3,8 @@ import { OpenTask, OpenTaskThunkCommon } from "./model";
 import { teacherClient } from "@/services/backend";
 import { AxiosResponse } from "axios";
 import { selectTaskPool } from "../pools";
+import { unselectAllClosedTasks } from "../closedTasks/slice";
+import { unselectAllOpenTasks } from "./slice";
 
 export const fetchOpenTasksThunk = createAsyncThunk<
   OpenTask[],
@@ -128,6 +130,8 @@ export const moveOpenTaskThunk = createAsyncThunk<
           id: Number(destinationTaskPoolId) as unknown as string,
         })
       );
+
+      thunkAPI.dispatch(unselectAllOpenTasks());
     } catch (error) {
       throw error;
     }

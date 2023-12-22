@@ -2,6 +2,7 @@ import { useTaskPoolStore } from "@/domain/teacher/taskPools/store/taskPoolStore
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useAddClosedTask } from "./useAddClosedTask";
 import { ClosedTask } from "../model/closedTasks";
+import { useClosedTasksStore } from "../store/closedTasksStore";
 
 export const useMoveClosedTask = ({
   courseId,
@@ -13,6 +14,7 @@ export const useMoveClosedTask = ({
   sourcePoolId: string;
 }) => {
   const { selectTaskPool } = useTaskPoolStore();
+  const { unselectedAllTasks } = useClosedTasksStore();
 
   const {
     mutateAsync: addClosedTask,
@@ -45,9 +47,8 @@ export const useMoveClosedTask = ({
       deleteClosedTask({ taskId: task.id }),
     ]);
 
-    console.log(destinationTaskPoolId);
-
     selectTaskPool({ id: destinationTaskPoolId });
+    unselectedAllTasks();
   };
 
   return {

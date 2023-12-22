@@ -39,8 +39,6 @@ export function middleware(request: NextRequest) {
       (requestPathname.includes("student") ||
         authRoutes.includes(requestPathname))
     ) {
-      console.log("teacher route");
-
       return NextResponse.redirect(
         new URL(routes.teacher.main.make(), request.url)
       );

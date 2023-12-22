@@ -1,10 +1,9 @@
 import { Flex, Box, Text, Stack, IconButton, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { routes } from "@/utils/routes";
-import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
-import { useAppDispatch } from "@/domain/store";
+import { useAppDispatch, useAppSelector } from "@/domain/store";
 import {
   updateOpenTaskThunk,
   deleteTasksPoolThunk,
@@ -13,13 +12,19 @@ import {
   selectTaskPool,
 } from "@/domain/store/teacher";
 import { useRunInTask } from "@/utils/index";
+import { TaskType } from "@/domain/store/teacher/tasks";
 
 type Props = {
   taskPool: TaskPool;
   isSelected: boolean;
+  selectedTasksCount: number;
 };
 
-export default function TaskPoolTile({ taskPool, isSelected }: Props) {
+export default function TaskPoolTile({
+  taskPool,
+  isSelected,
+  selectedTasksCount,
+}: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
@@ -60,6 +65,7 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
       dispatch(unSelectTaskPool());
     } else {
       dispatch(selectTaskPool({ id: taskPool.id }));
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -77,9 +83,16 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
     >
       <Stack>
         <Flex justifyContent="space-between" alignItems="center">
-          <Text fontSize="medium" fontWeight="bold">
-            {taskPool.title}
-          </Text>
+          <Stack direction="row" alignItems="baseline">
+            <Text fontSize="medium" fontWeight="bold">
+              {taskPool.title}
+            </Text>
+            {selectedTasksCount && (
+              <Text fontSize="small" color="gray.600">
+                Wybrane zadania: {selectedTasksCount}
+              </Text>
+            )}
+          </Stack>
           <Stack direction="row">
             <EditTaskPoolModal
               taskPool={taskPool}
@@ -118,7 +131,7 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
         <Text fontSize="medium">{taskPool.description}</Text>
         <Text fontSize="small">
           {`Typ zadań: ${
-            taskPool.taskType === TaskPoolTypes.open ? "otwarte" : "zamknięte"
+            taskPool.taskType === TaskType.OPEN ? "otwarte" : "zamknięte"
           }`}
         </Text>
         <Text fontSize="small">

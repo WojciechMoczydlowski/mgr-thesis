@@ -1,8 +1,16 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Text,
+  Stack,
+  Spacer,
+  IconButton,
+  Checkbox,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
-import { OpenTask } from "@/domain/student/papers/model/Task";
+import { StudentOpenTask } from "@/domain/student/papers/model/Task";
 
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useEditOpenTask } from "../endpoints/useEditOpenTask";
@@ -12,6 +20,11 @@ import {
   useTaskPoolById,
 } from "@/domain/teacher/taskPools/endpoints/useTaskPools";
 import { useMoveOpenTask } from "../endpoints/useMoveOpenTask";
+import { OpenTask } from "../model/openTask";
+import {
+  useIsOpenTaskSelected,
+  useOpenTasksStore,
+} from "../store/openTasksStore";
 
 type Props = {
   task: OpenTask;
@@ -48,6 +61,21 @@ export default function OpenTaskTile({ task, taskPoolId }: Props) {
     examId,
     sourcePoolId: taskPoolId,
   });
+
+  const isTaskSelected = useIsOpenTaskSelected({
+    taskId: task.id,
+    taskPoolId,
+  });
+
+  const openTaskStore = useOpenTasksStore();
+
+  const onCheckTask = (checked: boolean) => {
+    if (checked) {
+      openTaskStore.selectTask({ taskId: task.id, taskPoolId });
+    } else {
+      openTaskStore.unselectTask({ taskId: task.id, taskPoolId });
+    }
+  };
 
   if (!openTaskPools || !taskPool) {
     return <Text>Błąd podczas ładowanie strony</Text>;
@@ -91,6 +119,11 @@ export default function OpenTaskTile({ task, taskPoolId }: Props) {
                 deleteTask({ taskId: task.id });
               }}
               icon={<SmallCloseIcon />}
+            />
+            <Checkbox
+              size="lg"
+              isChecked={isTaskSelected}
+              onChange={(e) => onCheckTask(e.target.checked)}
             />
           </Stack>
         </Flex>

@@ -1,10 +1,17 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Text,
+  Stack,
+  Spacer,
+  IconButton,
+  Checkbox,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddClosedTaskModal from "./AddClosedTaskModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditClosedTaskModal from "./EditClosedTaskModal";
-import { ClosedTask, Task } from "@/domain/student/papers/model/Task";
 import { useDeleteTask } from "../../endpoints/useDeleteTask";
 import { useEditClosedTask } from "../endpoints/useEditClosedTask";
 import MoveTaskModal from "../../components/MoveTaskModal";
@@ -13,6 +20,11 @@ import {
   useClosedTaskPools,
   useTaskPoolById,
 } from "@/domain/teacher/taskPools/endpoints/useTaskPools";
+import { ClosedTask } from "../model/closedTasks";
+import {
+  useClosedTasksStore,
+  useIsClosedTaskSelected,
+} from "../store/closedTasksStore";
 
 type Props = {
   task: ClosedTask;
@@ -51,6 +63,21 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
       examId,
       sourcePoolId: taskPoolId,
     });
+
+  const isTaskSelected = useIsClosedTaskSelected({
+    taskId: task.id,
+    taskPoolId,
+  });
+
+  const closedTasksStore = useClosedTasksStore();
+
+  const onCheckTask = (checked: boolean) => {
+    if (checked) {
+      closedTasksStore.selectTask({ taskId, taskPoolId });
+    } else {
+      closedTasksStore.unselectTask({ taskId, taskPoolId });
+    }
+  };
 
   if (!closedTaskPools || !taskPool) {
     return <Text>Błąd podczas ładowanie strony</Text>;
@@ -92,6 +119,11 @@ export default function ClosedTaskTile({ task, taskPoolId }: Props) {
                 deleteTask({ taskId });
               }}
               icon={<SmallCloseIcon />}
+            />
+            <Checkbox
+              size="lg"
+              isChecked={isTaskSelected}
+              onChange={(e) => onCheckTask(e.target.checked)}
             />
           </Stack>
         </Flex>

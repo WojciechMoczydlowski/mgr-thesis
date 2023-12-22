@@ -1,20 +1,23 @@
 import { Flex, Box, Text, Stack, IconButton, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { routes } from "@/utils/routes";
 import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
 import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
 import { useEditTaskPool } from "../endpoints/useEditTaskPool";
-import { useTaskPoolById } from "../endpoints/useTaskPoolById";
 import { useTaskPoolStore } from "../store/taskPoolStore";
 
 type Props = {
   taskPool: TaskPool;
   isSelected: boolean;
+  selectedTasksCount: number;
 };
 
-export default function TaskPoolTile({ taskPool, isSelected }: Props) {
+export default function TaskPoolTile({
+  taskPool,
+  isSelected,
+  selectedTasksCount,
+}: Props) {
   const { query, push } = useRouter();
   const courseId = query.courseId as string;
   const examId = query.examId as string;
@@ -29,6 +32,7 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
       unSelectTaskPool();
     } else {
       selectTaskPool({ id: taskPool.id });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -49,6 +53,11 @@ export default function TaskPoolTile({ taskPool, isSelected }: Props) {
           <Text fontSize="medium" fontWeight="bold">
             {taskPool.title}
           </Text>
+          {selectedTasksCount > 0 && (
+            <Text fontSize="small" color="gray.600">
+              Wybrane zadania: {selectedTasksCount}
+            </Text>
+          )}
           <Stack direction="row">
             <EditTaskPoolModal
               taskPool={taskPool}

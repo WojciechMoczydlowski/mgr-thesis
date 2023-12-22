@@ -9,6 +9,8 @@ import { useEditTaskPool } from "../endpoints/useEditTaskPool";
 import { TaskType } from "@/domain/student/papers/model/Task";
 import TaskPoolTile from "./TaskPoolTile";
 import { useTaskPoolStore } from "../store/taskPoolStore";
+import { useSelectedClosedTasksCounter } from "../../tasks/closedTasks/store/closedTasksStore";
+import { useSelectedOpenTasksCounter } from "../../tasks/openTasks/store/openTasksStore";
 
 type Props = {
   taskPools?: TaskPool[];
@@ -24,6 +26,8 @@ export default function TaskPoolList({ taskPools, isLoading, isError }: Props) {
   const { mutate: addTaskPool } = useAddTaskPool({ courseId, examId });
 
   const { selectedTaskPoolId } = useTaskPoolStore();
+  const selectedClosedTasksCounter = useSelectedClosedTasksCounter();
+  const selectedOpenTasksCounter = useSelectedOpenTasksCounter();
 
   if (isLoading) {
     return <Loader />;
@@ -67,6 +71,7 @@ export default function TaskPoolList({ taskPools, isLoading, isError }: Props) {
             <List
               taskPools={openTasksPools}
               selectedTaskPoolId={selectedTaskPoolId}
+              selectedTasksCounter={selectedOpenTasksCounter}
             />
           )}
         </Flex>
@@ -82,6 +87,7 @@ export default function TaskPoolList({ taskPools, isLoading, isError }: Props) {
             <List
               taskPools={closedTasksPools}
               selectedTaskPoolId={selectedTaskPoolId}
+              selectedTasksCounter={selectedClosedTasksCounter}
             />
           )}
         </Flex>
@@ -101,9 +107,11 @@ function EmptyList() {
 function List({
   taskPools,
   selectedTaskPoolId,
+  selectedTasksCounter,
 }: {
   taskPools: TaskPool[];
   selectedTaskPoolId?: string;
+  selectedTasksCounter: (taskPoolId: string) => number;
 }) {
   return (
     <Flex direction="column" my="4">
@@ -113,6 +121,7 @@ function List({
             key={taskPool.id}
             taskPool={taskPool}
             isSelected={taskPool.id === selectedTaskPoolId}
+            selectedTasksCount={selectedTasksCounter(taskPool.id)}
           />
         );
       })}

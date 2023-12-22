@@ -1,15 +1,14 @@
-import { Flex, Box, Text, Stack, Spacer, IconButton } from "@chakra-ui/react";
+import { Flex, Box, Text, Stack, IconButton, Checkbox } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import AddTaskModal from "./AddOpenTaskModal";
-import { InfoSpinner } from "@/components/infoSpinner";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditOpenTaskModal from "./EditOpenTaskModal";
-import { OpenTask } from "@/domain/student/papers/model/Task";
 import { useRunInTask } from "@/utils/useRunInTask";
 import { useAppDispatch, useAppSelector } from "@/domain/store";
 import {
+  OpenTask,
   deleteOpenTaskThunk,
   moveOpenTaskThunk,
+  selectIsOpenTaskSelectedChecker,
   updateOpenTaskThunk,
 } from "@/domain/store/teacher";
 import MoveTaskModal from "../../components/MoveTaskModal";
@@ -17,6 +16,10 @@ import {
   selectOpenTasksPools,
   selectSelectedTaskPool,
 } from "@/domain/store/teacher/pools/selectors";
+import {
+  selectOpenTask,
+  unselectOpenTask,
+} from "@/domain/store/teacher/openTasks/slice";
 
 type Props = {
   task: OpenTask;
@@ -31,6 +34,9 @@ export default function OpenTaskTile({ task }: Props) {
 
   const selectedTaskPool = useAppSelector(selectSelectedTaskPool);
   const openTaskPools = useAppSelector(selectOpenTasksPools);
+  const isTaskSelected = useAppSelector(selectIsOpenTaskSelectedChecker)(
+    task.id
+  );
 
   const { isRunning: isEditOpenTaskLoading, runInTask: runEditOpenTaskTask } =
     useRunInTask();
@@ -42,6 +48,16 @@ export default function OpenTaskTile({ task }: Props) {
 
   const { isRunning: isMoveOpenTaskLoading, runInTask: runMoveOpenTaskTask } =
     useRunInTask();
+
+  const onCheckTask = (isChecked: boolean) => {
+    const taskId = task.id;
+
+    if (isChecked) {
+      dispatch(selectOpenTask({ taskId, taskPoolId }));
+    } else {
+      dispatch(unselectOpenTask({ taskId, taskPoolId }));
+    }
+  };
 
   if (!selectedTaskPool) {
     return <Text>Proszę wybrać pulę zadań</Text>;
@@ -119,6 +135,11 @@ export default function OpenTaskTile({ task }: Props) {
                 );
               }}
               icon={<SmallCloseIcon />}
+            />
+            <Checkbox
+              size="lg"
+              isChecked={isTaskSelected}
+              onChange={(e) => onCheckTask(e.target.checked)}
             />
           </Stack>
         </Flex>

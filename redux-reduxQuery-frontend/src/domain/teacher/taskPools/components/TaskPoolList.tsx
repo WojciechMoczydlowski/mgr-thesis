@@ -2,7 +2,6 @@ import { Flex, Text, Spacer, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import AddTaskPoolModal from "./AddTaskPoolModal";
 import { InfoSpinner } from "@/components/infoSpinner";
-import { TaskPoolTypes } from "../const";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import EditTaskPoolModal from "./EditTaskPoolModal";
 import { useEffect } from "react";
@@ -13,6 +12,7 @@ import {
   addTasksPoolThunk,
   deleteTasksPoolThunk,
   TaskPool,
+  selectSelectedOpenTasksCountSelector,
 } from "@/domain/store/teacher";
 import { useSelector } from "react-redux";
 import {
@@ -23,6 +23,8 @@ import {
 } from "@/domain/store/teacher/pools/selectors";
 import { useRunInTask } from "@/utils/index";
 import TaskPoolTile from "./TaskPoolTile";
+import { selectSelectedClosedTasksCountSelector } from "@/domain/store/teacher/closedTasks/selectors";
+import { TaskType } from "@/domain/student/papers/model/Task";
 
 export default function TaskPoolList() {
   const { query } = useRouter();
@@ -35,6 +37,12 @@ export default function TaskPoolList() {
   const selectedTaskPool = useSelector(selectSelectedTaskPool);
   const openTasksPools = useSelector(selectOpenTasksPools);
   const closedTasksPools = useSelector(selectClosedTasksPools);
+  const selectedOpenTasksCountSelector = useSelector(
+    selectSelectedOpenTasksCountSelector
+  );
+  const selectedClosedTasksCountSelector = useSelector(
+    selectSelectedClosedTasksCountSelector
+  );
 
   const {
     isError,
@@ -103,6 +111,7 @@ export default function TaskPoolList() {
             <List
               taskPools={openTasksPools}
               selectedTaskPoolId={selectedTaskPool?.id}
+              selectedTasksCounter={selectedOpenTasksCountSelector}
             />
           )}
         </Flex>
@@ -118,6 +127,7 @@ export default function TaskPoolList() {
             <List
               taskPools={closedTasksPools}
               selectedTaskPoolId={selectedTaskPool?.id}
+              selectedTasksCounter={selectedClosedTasksCountSelector}
             />
           )}
         </Flex>
@@ -137,9 +147,11 @@ function EmptyList() {
 function List({
   taskPools,
   selectedTaskPoolId,
+  selectedTasksCounter,
 }: {
   taskPools: TaskPool[];
   selectedTaskPoolId?: string;
+  selectedTasksCounter: (taskPoolId: string) => number;
 }) {
   return (
     <Flex direction="column" my="4">
@@ -149,6 +161,7 @@ function List({
             key={taskPool.id}
             taskPool={taskPool}
             isSelected={taskPool.id === selectedTaskPoolId}
+            selectedTasksCount={selectedTasksCounter(taskPool.id)}
           />
         );
       })}

@@ -39,7 +39,7 @@ export function useEditClosedTask({
         title: "Zadanie zamknięte pomyślnie edytowane",
       });
       queryClient.invalidateQueries({
-        queryKey: ["openTasks", courseId, examId, taskPoolId],
+        queryKey: ["closedTasks", courseId, examId, taskPoolId],
       });
     },
     onError: () => {

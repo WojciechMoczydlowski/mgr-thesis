@@ -1,4 +1,4 @@
-import { ClosedTask } from "@/domain/student/papers/model/Task";
+import { ClosedTask } from "@/domain/store/teacher/closedTasks";
 import { EditIcon } from "@chakra-ui/icons";
 import {
   Modal,

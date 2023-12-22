@@ -1,4 +1,4 @@
-export type Task = OpenTask | ClosedTask;
+export type Task = StudentOpenTask | StudentClosedTask;
 
 export enum TaskType {
   OPEN = "OPEN",
@@ -14,12 +14,12 @@ type TaskCommon = {
   penaltyWeight: number;
 };
 
-export type ClosedTask = {
+export type StudentClosedTask = {
   type: TaskType.CLOSED;
   answers: ClosedTaskAnswer[];
 } & TaskCommon;
 
-export type OpenTask = {
+export type StudentOpenTask = {
   type: TaskType.OPEN;
   answer: string;
 } & TaskCommon;

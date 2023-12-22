@@ -1,4 +1,1 @@
-export const TaskPoolTypes = {
-  open: "OPEN",
-  closed: "CLOSED",
-};
+import { TaskType } from "@/domain/store/teacher/tasks";
