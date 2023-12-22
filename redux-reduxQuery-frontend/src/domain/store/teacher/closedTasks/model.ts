@@ -1,5 +1,4 @@
-import { TaskType } from "@/domain/student/papers/model/Task";
-import { TaskCommon } from "../tasks";
+import { TaskCommon, TaskType } from "../tasks";
 
 export type ClosedTask = {
   type: TaskType.CLOSED;

@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { TaskType } from "@/domain/student/papers/model/Task";
+import { TaskType } from "../tasks";
 
 const selectTasksPoolsState = (state: RootState) => state.tasksPools;
 

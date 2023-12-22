@@ -6,11 +6,11 @@ import AddTaskPoolModal from "./AddTaskPoolModal";
 import { InfoSpinner } from "@/components/infoSpinner";
 import { useDeleteTaskPool } from "../endpoints/useDeleteTaskPool";
 import { useEditTaskPool } from "../endpoints/useEditTaskPool";
-import { TaskType } from "@/domain/student/papers/model/Task";
 import TaskPoolTile from "./TaskPoolTile";
 import { useTaskPoolStore } from "../store/taskPoolStore";
 import { useSelectedClosedTasksCounter } from "../../tasks/closedTasks/store/closedTasksStore";
 import { useSelectedOpenTasksCounter } from "../../tasks/openTasks/store/openTasksStore";
+import { TaskType } from "../../tasks/model";
 
 type Props = {
   taskPools?: TaskPool[];

@@ -1,4 +1,4 @@
-import { TaskType } from "@/domain/student/papers/model/Task";
+import { TaskType } from "@/domain/teacher/tasks/model";
 
 export type ClosedTaskResultExamPaper = {
   id: string;

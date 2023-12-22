@@ -1,11 +1,11 @@
 import { Flex, Text, Spacer } from "@chakra-ui/react";
 import AddOpenTaskModal from "../openTasks/components/AddOpenTaskModal";
 import AddClosedTaskModal from "../closedTasks/components/AddClosedTaskModal";
-import { TaskType } from "@/domain/student/papers/model/Task";
 import OpenTaskList from "../openTasks/components/OpenTaskList";
 import ClosedTaskList from "../closedTasks/components/ClosedTaskList";
 import { useSelector } from "react-redux";
 import { selectSelectedTaskPool } from "@/domain/store/teacher/pools/selectors";
+import { TaskType } from "@/domain/store/teacher/tasks";
 
 export function TasksList() {
   const selectedTaskPool = useSelector(selectSelectedTaskPool);
